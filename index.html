@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Attendance System</title>
+    <link rel="icon" href="/assets/infinity.ico" type="image/x-icon">
+    
+</head>
+
+<body>
+    <div id="main">
+        <h1>Video Attendance System</h1>
+        <form id="uploadForm" action="/upload_video" method="post" enctype="multipart/form-data">
+            <div>
+                <div class="video-container">
+                    <video id="video" autoplay></video>
+                    <img id="placeholderImage" src="/assets/camera.png" alt="Placeholder Image">
+                </div>
+                <button type="button" id="startCamera">Start Camera</button>
+                <button type="button" id="startRecord" disabled>Start Recording</button>
+                <button type="button" id="stopRecord" disabled>Stop Recording</button>
+            </div>
+
+            <!-- Hidden input for video data -->
+            <input type="hidden" name="video_data" id="videoData">
+            <input type="hidden" name="timestamps" id="timestamps">
+            <br><br>
+
+            <span id="extracting_wait" style="display: none;">Extracting frames, please wait...</span>
+            <input type="submit" value="Upload Video" disabled>
+        </form>
+    </div>
+
+    <div id="errBox">
+        <h1 id="proc_stat">Processing video, please wait...</h1>
+        <h2 id="upload_status"></h2>
+        <div id="attendance_div">
+            <img id="load" src="/assets/loading_5.gif" alt="Loading">
+            <h2 id="calc_attend">Checking Attendance...</h2>
+        </div>
+    </div>
+
+    <!-- Loader Element -->
+    <div id="loader">
+        <img src="/assets/loading_5.gif" alt="Loading">
+    </div>
+
+
+</body>
+
+</html>
