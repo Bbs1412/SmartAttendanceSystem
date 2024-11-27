@@ -90,7 +90,7 @@
             margin: 0 auto;
         }
     </style>
-    
+
 </head>
 
 <body>
@@ -125,7 +125,26 @@
         <p>&copy; 2024 Attendance System. All rights reserved.</p>
     </footer>
 
+    <script>
+        result_object = "/assets/results.json";
 
+        fetch('/assets/results.json', {
+            method: 'GET',
+        }).then(response => {
+            if (!response.ok) {
+                throw new Error('JS: Network response was not ok');
+            }
+            console.log('JS: Got the main results sheet.');
+            return response.json();
+        })
+            .then(data => {
+                result_object = data;
+                console.log(result_object);
+            })
+            .catch(error => {
+                console.error('JS: There was a problem with the fetch operation:', error);
+            });
+    </script>
 </body>
 
 </html>
