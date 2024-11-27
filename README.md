@@ -10,6 +10,12 @@ Parallelized calc for attendance
 - Templates/ might give some error on linux, check the 'T' being either capital or small
 - If some errors occur, first try deleting the `__pycache__` folder and then try again with server restart
 
+## `WARNING(s):`
++ The project is not focused on implementing best security practices or showing the best ways to code something. The main aim is to integrate multiple AWS services under the free tier in the project.
++ Contributions for security or coding practices changes are welcome!!
++ If you want to add more services to the project, create a new environment variable (to enable or disable that feature/service) and add it!
++ For example, cognito service is implemented, but, it can be completely disabled by setting the its environment variable to `False` in the `.env` file. 
+
 
 ## Extra Measures:
 - Although condition to check this dynamically are coded already, but still, if theres some error or just for reverification, check following folders:
