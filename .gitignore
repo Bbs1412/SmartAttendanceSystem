@@ -162,4 +162,4 @@ env.bak/
 venv.bak/
 
 # Custom:
-temp*
+temp_*
