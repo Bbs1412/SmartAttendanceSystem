@@ -2,9 +2,9 @@ import os
 import pickle
 import face_recognition
 
-# Declare the image file name
-image_name = "person.jpg"  # Replace with your image file name
-pickle_name = "person_model.pkl"  # Output pickle file name
+# Take user inputs for image and pickle file names
+image_name = input("Enter the image file name (e.g., person.jpg): ").strip()
+pickle_name = input("Enter the output pickle file name (e.g., person_model.pkl): ").strip()
 
 try:
     # Load the image
