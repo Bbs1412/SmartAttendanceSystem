@@ -163,3 +163,7 @@ venv.bak/
 
 # Custom:
 temp_*
+Jsons/*
+Models/*
+Pics/*
+
