@@ -6,6 +6,17 @@ Smart Attendance System to automate the attendance calculation in lectures using
 - add the Description of the project here later...
 
 
+## Index:
+- [Smart Attendance System](#smart-attendance-system)
+- [General Instructions](#general-instructions)
+- [Steps to run](#steps-to-run)
+- [Extra Measures](#extra-measures)
+    - [Folders](#folders)
+    - [Template Rendering Errors](#template-rendering-errors)
+- [Remember](#remember)
+- [Contact](#contact)
+
+
 ## General Instructions:
 - If some errors occur, first try deleting the `__pycache__` folder and then try again with server restart
 
