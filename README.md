@@ -76,4 +76,18 @@ Smart Attendance System to automate the attendance calculation in lectures using
     ```
 
 
+## Extra Measures:
+
+### Folders:
+- Although the code includes conditions to dynamically check and resolve issues, if an error occurs or for re-verification, please check the following folders:
+    | Folder | Detail | Checking |
+    | --- | --- | --- |
+    | `assets/` | Should contain all the css, js, images, etc. | Cloned from repository |
+    | `Templates/` | Should contain all the html files | Cloned from repository |
+    | `Pics/` | Should contain all the images of people to be recognized | Must be done by user |
+    | `Excels/` | Empty initially | Dynamically Checked in ?? |
+    | `Uploads/` | Empty initially | Dynamically Checked in ?? |
+    | `Jsons/` | Empty initially | Dynamically Checked in `face_train.py` |
+    | `Models/` | Empty initially | Dynamically Checked in `face_train.py` |
+- In case you have changed the env variables, check folders accordingly
 
