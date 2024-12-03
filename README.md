@@ -91,3 +91,22 @@ Smart Attendance System to automate the attendance calculation in lectures using
     | `Models/` | Empty initially | Dynamically Checked in `face_train.py` |
 - In case you have changed the env variables, check folders accordingly
 
+### Template Rendering Errors:
+- `Templates/` might give some error on linux, check the 'T' being either capital or small
+- Or else, Set the Templates folder path in the `app.py` file manually:
+    ```Python
+    app = Flask(__name__, template_folder='Templates')
+    ```
+
+
+---
+
+👇 If this still appears on Readme, please contact me 😁
+
+---
+ 
+## Remember:
+- in the git clone command, add the `--depth 1` flag to clone only the latest commit and not the entire history
+- Add .env file in root directory (on github push)
+- Parallelized calc for attendance
+- Add emojis in the README.md file
