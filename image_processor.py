@@ -6,6 +6,7 @@ from typing import Union, List, Tuple
 
 
 load_dotenv()
+DEBUG = os.environ.get('DEBUG')
 static_url = os.environ.get('static_url')
 upload_folder = os.environ.get("upload_folder")
 
@@ -52,6 +53,9 @@ def process_image(
         timestamps = [timestamps]
     if isinstance(base64s, str):
         base64s = [base64s]
+
+    if DEBUG:
+        print(f"[Img-processor Info]: Got {len(base64s)} images and {len(timestamps)} timestamps...")
 
     if len(timestamps) != len(base64s):
         raise ValueError(
@@ -105,18 +109,20 @@ def process_image(
             js_modified_time_stamps.append(f"{timestamp}, {same_name_count}")
 
         except base64.binascii.Error as e:
-            print(f"[Error] Invalid Base64 string at index {idx}: {e}")
+            print(f"[Img-processor Error] Invalid Base64 string at index {idx}: {e}")
         except ValueError as e:
-            print(f"[Error] Timestamp processing failed at index {idx}: {e}")
+            print(f"[Img-processor Error] Timestamp processing failed at index {idx}: {e}")
         except Exception as e:
-            print(f"[Error] Failed to process image at index {idx}: {e}")
+            print(f"[Img-processor Error] Failed to process image at index {idx}: {e}")
 
-        # print(f'Saved image `{file_name}` successfully...')
+        if DEBUG:
+            print(f'[Img-processor Info]: Saved image `{file_name}` successfully...')
 
     return file_names, py_time_stamps, js_modified_time_stamps
 
 
 # Example usage:
+# DEBUG = True
 # timestamps = ["01/12/2024, 12:30:45 PM", "01/12/2024, 12:30:46 PM"]
 # base64s = [
 #     "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAFiUAABYlAUlSJPAAAABSSURBVChTY3gro/IfjpWU////xICCqaDguYLqfzhWU/n/4wM7CmZQ2ujzH4YVNwb+Z1j88j/DklcQGoQxFIAkYRirApgJOBUsegGRANGLXvwHAMqqnG+1iY7uAAAAAElFTkSuQmCC",
