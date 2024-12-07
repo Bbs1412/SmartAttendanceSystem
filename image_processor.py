@@ -6,7 +6,8 @@ from typing import Union, List, Tuple
 
 
 load_dotenv()
-DEBUG = os.environ.get('DEBUG')
+DEBUG = os.environ.get('DEBUG', False) == 'True' 
+
 static_url = os.environ.get('static_url')
 upload_folder = os.environ.get("upload_folder")
 
