@@ -1,4 +1,5 @@
 import cv2
+import json
 import pickle
 import numpy as np
 import face_recognition
@@ -31,17 +32,31 @@ class Timer:
 
 
 # Initialize variables for image and models path
-image_path = 'path_to_image.jpg'
-models_path = 'Models/'
+image_path = 'image.jpg'    # Set the image path
+models_path = 'Models/'     # Set the path where models are stored
 
-# Load known face encodings from pickle files
+# Load known face encodings and student register
 known_face_encodings = []
 known_face_reg_no = []
+student_names = []
 
-# Load the saved model
-file_path = models_path + 'student_model.pkl'
-with open(file_path, 'rb') as file:
-    known_face_encodings.append(pickle.load(file))
+# Load register from register.json
+register_file = 'register.json'
+
+with open(register_file, 'r') as file:
+    register_data = json.load(file)
+
+    for student in register_data:
+        reg_no = student["Reg_No"]
+        student_name = student["Name"]
+        # Path to the pickle file
+        pickle_file = models_path + student["Pickle"]
+        # Load the pickle file
+        with open(pickle_file, 'rb') as pf:
+            face_encoding = pickle.load(pf)
+            known_face_encodings.append(face_encoding)
+            known_face_reg_no.append(reg_no)
+            student_names.append(student_name)
 
 
 # Function to check attendance for a given image
@@ -67,7 +82,8 @@ def check_attendance(image_path):
 
         if matches[best_match_index]:
             reg_no = known_face_reg_no[best_match_index]
-            present_people.append(reg_no)
+            name = student_names[best_match_index]
+            present_people.append({"Reg_No": reg_no, "Name": name})
 
     timer.end()
     print(f"Time taken: {timer.get_diff()} seconds")
