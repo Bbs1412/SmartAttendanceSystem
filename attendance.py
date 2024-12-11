@@ -31,9 +31,8 @@ class Timer:
         }
 
 
-# Initialize variables for image and models path
-image_path = 'image.jpg'    # Set the image path
-models_path = 'Models/'     # Set the path where models are stored
+# Initialize variables for models path
+models_path = 'Models/'
 
 # Load known face encodings and student register
 known_face_encodings = []
@@ -59,38 +58,43 @@ with open(register_file, 'r') as file:
             student_names.append(student_name)
 
 
-# Function to check attendance for a given image
-def check_attendance(image_path):
-    timer = Timer()
-    timer.start()
-
-    image = cv2.imread(image_path)
-    small_frame = cv2.resize(image, (0, 0), fx=0.25, fy=0.25)
-    rgb_small_frame = np.ascontiguousarray(small_frame[:, :, ::-1])
-
-    face_locations = face_recognition.face_locations(rgb_small_frame)
-    face_encodings = face_recognition.face_encodings(
-        rgb_small_frame, face_locations)
-
+# Function to check attendance for a list of images
+def check_attendance(image_paths):
     present_people = []
-    for face_encoding in face_encodings:
-        matches = face_recognition.compare_faces(
-            known_face_encodings, face_encoding)
-        face_distance = face_recognition.face_distance(
-            known_face_encodings, face_encoding)
-        best_match_index = np.argmin(face_distance)
+    timer = Timer()
 
-        if matches[best_match_index]:
-            reg_no = known_face_reg_no[best_match_index]
-            name = student_names[best_match_index]
-            present_people.append({"Reg_No": reg_no, "Name": name})
+    for image_path in image_paths:
+        timer.start()
 
-    timer.end()
-    print(f"Time taken: {timer.get_diff()} seconds")
+        image = cv2.imread(image_path)
+        small_frame = cv2.resize(image, (0, 0), fx=0.25, fy=0.25)
+        rgb_small_frame = np.ascontiguousarray(small_frame[:, :, ::-1])
+
+        face_locations = face_recognition.face_locations(rgb_small_frame)
+        face_encodings = face_recognition.face_encodings(
+            rgb_small_frame, face_locations)
+
+        for face_encoding in face_encodings:
+            matches = face_recognition.compare_faces(
+                known_face_encodings, face_encoding)
+            face_distance = face_recognition.face_distance(
+                known_face_encodings, face_encoding)
+            best_match_index = np.argmin(face_distance)
+
+            if matches[best_match_index]:
+                reg_no = known_face_reg_no[best_match_index]
+                name = student_names[best_match_index]
+                present_people.append({"Reg_No": reg_no, "Name": name})
+
+        timer.end()
+        print(f"Processed {image_path} in {timer.get_diff()} seconds")
 
     return present_people
 
 
+# List of image paths to check attendance
+image_paths = ['image1.jpg', 'image2.jpg', 'image3.jpg']
+
 # Call the function to check attendance
-present = check_attendance(image_path)
+present = check_attendance(image_paths)
 print("Present students:", present)
