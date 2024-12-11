@@ -32,6 +32,22 @@ class Timer:
         }
 
 
+# Logging helper functions to save logs:
+logs = []
+
+
+def create_log(log):
+    """Creates a log and appends it to the global logs list"""
+    global logs
+    logs.append(log)
+
+
+def export_logs():
+    """Exports the logs to the json file at  once (at end of the process)"""
+    with open("logs.json", "w") as f:
+        json.dump(logs, f, indent=4)
+
+
 # Initialize variables for models path
 models_path = 'Models/'
 
@@ -61,6 +77,8 @@ with open(register_file, 'r') as file:
             "Percentage": -1,
             "Status": -1,
         }
+
+    create_log({"log": "Loaded student register", "time": datetime.now()})
     # print(json.dumps(register, indent=4))
 
 
@@ -76,6 +94,11 @@ for stud in register.keys():
         known_face_encodings.append(pickle.load(file))
 
     known_face_reg_no.append(register[stud]['Reg_No'])
+
+    create_log({
+        "log": f"Loaded Model: ({register[stud]['Reg_No']}) {register[stud]['Name']}",
+        "time": datetime.now()}
+    )
     print(
         f"Loaded Model: ({register[stud]['Reg_No']}) {register[stud]['Name']}")
 
@@ -109,8 +132,12 @@ def check_attendance(image_paths):
                 present_people.append({"Reg_No": reg_no, "Name": name})
 
         timer.end()
+        create_log({
+            "log": f"Processed {image_path} in {timer.get_diff()} seconds",
+            "time": datetime.now()
+        })
         print(f"Processed {image_path} in {timer.get_diff()} seconds")
-
+        
     return present_people
 
 
@@ -119,4 +146,8 @@ image_paths = ['image1.jpg', 'image2.jpg', 'image3.jpg']
 
 # Call the function to check attendance
 present = check_attendance(image_paths)
+create_log({"log": f"Present students: {present}", "time": datetime.now()})
 print("Present students:", present)
+
+# Export logs to json file
+export_logs()
