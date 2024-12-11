@@ -1,3 +1,4 @@
+import os
 import cv2
 import json
 import pickle
@@ -39,23 +40,44 @@ known_face_encodings = []
 known_face_reg_no = []
 student_names = []
 
-# Load register from register.json
+# load the `class` json created from face modelling code (like a student register)
 register_file = 'register.json'
+register = {}
 
 with open(register_file, 'r') as file:
     register_data = json.load(file)
 
-    for student in register_data:
-        reg_no = student["Reg_No"]
-        student_name = student["Name"]
-        # Path to the pickle file
-        pickle_file = models_path + student["Pickle"]
-        # Load the pickle file
-        with open(pickle_file, 'rb') as pf:
-            face_encoding = pickle.load(pf)
-            known_face_encodings.append(face_encoding)
-            known_face_reg_no.append(reg_no)
-            student_names.append(student_name)
+    for stud in register_data:
+        register[stud['Reg_No']] = {
+            'Name': stud['Name'],
+            'Reg_No': stud['Reg_No'],
+            "Disp_name": stud['Disp_name'],
+            "Image": stud['Image'],
+            "Pickle": stud['Pickle'],
+
+            "First_In": -1,
+            "Last_In": -1,
+            "Attendance": {},
+            "Percentage": -1,
+            "Status": -1,
+        }
+    # print(json.dumps(register, indent=4))
+
+
+# Load saved face models from model pkl:
+known_face_encodings = []
+known_face_reg_no = []
+
+for stud in register.keys():
+    file_name = register[stud]['Pickle']
+    file_path = os.path.join("models", file_name)
+
+    with open(file_path, 'rb') as file:
+        known_face_encodings.append(pickle.load(file))
+
+    known_face_reg_no.append(register[stud]['Reg_No'])
+    print(
+        f"Loaded Model: ({register[stud]['Reg_No']}) {register[stud]['Name']}")
 
 
 # Function to check attendance for a list of images
