@@ -2,10 +2,14 @@ import os
 import cv2
 import json
 import pickle
+import threading
 import numpy as np
 import face_recognition
 from datetime import datetime
+from concurrent.futures import ThreadPoolExecutor
 
+# Initialize locks
+register_lock = threading.Lock()
 
 # Timer class to calculate time taken by any processes
 class Timer:
@@ -139,6 +143,61 @@ def check_attendance(image_paths):
         print(f"Processed {image_path} in {timer.get_diff()} seconds")
         
     return present_people
+
+
+def get_datetime(js_mod_dt):
+    "Gives the frame number and datetime in datetime (python)'s std format"
+    # sample = "8/8/2024, 12:56:36 am, 0"
+    number = js_mod_dt.split(",")[-1].strip()
+    stamp = ', '.join(js_mod_dt.split(",")[:-1])
+    dt_timestamp = datetime.strptime(stamp, "%d/%m/%Y, %I:%M:%S %p")
+
+    # print(f'Stamp: {stamp.center(25)} & Number: {str(number).center(4)}', end='\r')
+    return dt_timestamp, int(number)
+
+
+def update_register(present, timestamp):
+    with register_lock:
+        for reg_no in register.keys():
+            # remove image and pickle (server side) details:
+            register[reg_no].pop('Image', None)
+            register[reg_no].pop('Pickle', None)
+
+            if reg_no in present:
+                register[reg_no]['Attendance'][timestamp] = True
+
+                # If first_in is not init, then put the curr stamp,
+                # else, compare and keep older stamp...
+                if register[reg_no]['First_In'] == -1:
+                    register[reg_no]['First_In'] = timestamp
+                else:
+                    # curr stamp
+                    curr_dt, curr_frame = get_datetime(timestamp)
+                    # saved stamp
+                    saved_dt, saved_frame = get_datetime(
+                        register[reg_no]['First_In'])
+
+                    # if curr dt came earlier or the frame number is smaller than saved one within the same dt stamp
+                    if (curr_dt < saved_dt) or (curr_dt == saved_dt and curr_frame < saved_frame):
+                        register[reg_no]['First_In'] = timestamp
+
+                # If last_in is not init, then put the curr stamp,
+                # else, compare and keep newer stamp...
+                if register[reg_no]['Last_In'] == -1:
+                    register[reg_no]['Last_In'] = timestamp
+                else:
+                    # curr stamp
+                    curr_dt, curr_frame = get_datetime(timestamp)
+                    # saved stamp
+                    saved_dt, saved_frame = get_datetime(
+                        register[reg_no]['Last_In'])
+
+                    # if curr dt came later or the frame number is larger than saved one within the same dt stamp
+                    if (curr_dt > saved_dt) or (curr_dt == saved_dt and curr_frame > saved_frame):
+                        register[reg_no]['Last_In'] = timestamp
+
+            else:
+                register[reg_no]['Attendance'][timestamp] = False
 
 
 # List of image paths to check attendance
