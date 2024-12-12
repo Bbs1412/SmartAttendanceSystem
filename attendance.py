@@ -251,6 +251,39 @@ def driver_function(to_check: list, timestamp: list):
     export_logs()
 
 
+# Function to mark attendance and save the register
+def mark_attendance():
+    for stud in register.keys():
+        stud = register[stud]
+        present = 0
+        absent = 0
+
+        # iterate over all the time-stamps:
+        for stamp in stud['Attendance'].keys():
+            # print(stud['Attendance'][stamp])
+            if (stud['Attendance'][stamp]):
+                present += 1
+            else:
+                absent += 1
+
+        percentage = round((present / (present + absent)) * 100)
+        stud['Percentage'] = percentage
+        status = 'Present' if percentage >= 75 else 'Absent'
+        stud['Status'] = status
+
+        # print(f'Present: {present}, Absent: {absent}')
+        # print(f'Status: {status}, Percentage: {percentage}')
+
+
+# Save the register to a json file
+def save_register():
+    mark_attendance()
+
+    json_file = os.environ.get('class_attendance')
+    with open(json_file, "w") as f:
+        json.dump(register, f, indent=4)
+
+
 # List of image paths to check attendance
 image_paths = ['image1.jpg', 'image2.jpg', 'image3.jpg']
 
