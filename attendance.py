@@ -12,6 +12,8 @@ from concurrent.futures import ThreadPoolExecutor
 register_lock = threading.Lock()
 
 # Timer class to calculate time taken by any processes
+
+
 class Timer:
     def __init__(self):
         self.start_time = None
@@ -141,7 +143,7 @@ def check_attendance(image_paths):
             "time": datetime.now()
         })
         print(f"Processed {image_path} in {timer.get_diff()} seconds")
-        
+
     return present_people
 
 
@@ -198,6 +200,55 @@ def update_register(present, timestamp):
 
             else:
                 register[reg_no]['Attendance'][timestamp] = False
+
+
+# Check attendance for each image and update the register
+def check_image(args):
+    i, to_check, timestamp = args
+    timer = Timer()
+    timer.start()
+    present = check_attendance(to_check[i])
+    timer.end()
+
+    timer_for_lock = Timer()
+    timer_for_lock.start()
+    update_register(present, timestamp[i])
+    timer_for_lock.end()
+
+    time_records = {}
+    time_records = timer.get_json(
+        start_name='thread_start_time',
+        end_name='thread_end_time',
+        diff_name='thread_time_taken'
+    )
+    time_records['register_lock_time'] = timer_for_lock.get_diff()
+    create_log({
+        'timestamp': timestamp[i],
+        'time_records': time_records,
+        'people_present': present,
+    })
+
+
+# Driver function to check attendance for multiple images
+def driver_function(to_check: list, timestamp: list):
+    timer_ = Timer()
+    timer_.start()
+
+    # max_workers = 5
+    max_workers = os.cpu_count()
+
+    # with ThreadPoolExecutor(max_workers=max_workers) as executor:
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        executor.map(check_image, [(i, to_check, timestamp)
+                     for i in range(len(to_check))])
+
+    timer_.end()
+    create_log({'title': 'final log', **timer_.get_json(
+        start_name='calc_start_time',
+        end_name='calc_end_time',
+        diff_name='calc_time_taken'
+    )})
+    export_logs()
 
 
 # List of image paths to check attendance
