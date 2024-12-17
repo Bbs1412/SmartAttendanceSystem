@@ -135,7 +135,78 @@ class Timer:
 
 
 
+# ================================================================================
+# Actual code which checks the attendance, given a frame/image:
+# ================================================================================
+
+def check_attendance(frame: str) -> list:
+    """
+    Function which takes just one image_path and returns the reg_no of present people
+
+    Args:
+        frame (str | list): path of the file
+
+    Returns:
+        list: list with reg no of present people
+    """
+
+    video_capture = cv2.VideoCapture(frame)
+    # video_capture = cv2.imread(frame)
+
+    # Frame pre-processing:
+    _, frame = video_capture.read()
+    small_frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
+    rgb_small_frame = np.ascontiguousarray(small_frame[:, :, ::-1])
+
+    # get the locations where faces are recognized:
+    face_locations = face_recognition.face_locations(rgb_small_frame)
+
+    # get the encodings of those recognized faces:
+    face_encodings = face_recognition.face_encodings(
+        face_image=rgb_small_frame,
+        known_face_locations=face_locations,
+        num_jitters=1
+    )
+
+    # ------------------------------------------------------------------------
+    present_people = []
+
+    # for all the faces found in this image/frame:
+    for face_encoding in face_encodings:
+
+        # get a list of true/false for match-found with all the known encodings:
+        matches = face_recognition.compare_faces(
+            known_face_encodings=known_face_encodings,
+            face_encoding_to_check=face_encoding
+        )
+
+        # this returns list of distances with all the known encodings
+        face_distance = face_recognition.face_distance(
+            face_encodings=known_face_encodings,
+            face_to_compare=face_encoding
+        )
+
+        # find the person with minimum dist (best match):
+        best_match_index = np.argmin(face_distance)
+        # later this will be also cross checked with matches list [True/False]
+        # Then declared as present or not finally
+
+        # if that minimum dist image exists in matches as True, then mark present:
+        if matches[best_match_index] == True:
+            reg_no = known_face_reg_no[best_match_index]
+            present_people.append(reg_no)
+
+    video_capture.release()
+    cv2.destroyAllWindows()
+    return present_people
+
+
+# ================================================================================
 # Logging helper functions to save logs:
+# ================================================================================
+
+# To solve the concurrency issues with file-write,
+# I am just appending the logs in one list, then, will save all at once:
 logs = []
 
 
@@ -147,46 +218,10 @@ def create_log(log):
 
 def export_logs():
     """Exports the logs to the json file at  once (at end of the process)"""
-    with open("logs.json", "w") as f:
+    with open(attendance_log_file, "w") as f:
         json.dump(logs, f, indent=4)
+        # json.dump(logs, f)
 
-
-# Function to check attendance for a list of images
-def check_attendance(image_paths):
-    present_people = []
-    timer = Timer()
-
-    for image_path in image_paths:
-        timer.start()
-
-        image = cv2.imread(image_path)
-        small_frame = cv2.resize(image, (0, 0), fx=0.25, fy=0.25)
-        rgb_small_frame = np.ascontiguousarray(small_frame[:, :, ::-1])
-
-        face_locations = face_recognition.face_locations(rgb_small_frame)
-        face_encodings = face_recognition.face_encodings(
-            rgb_small_frame, face_locations)
-
-        for face_encoding in face_encodings:
-            matches = face_recognition.compare_faces(
-                known_face_encodings, face_encoding)
-            face_distance = face_recognition.face_distance(
-                known_face_encodings, face_encoding)
-            best_match_index = np.argmin(face_distance)
-
-            if matches[best_match_index]:
-                reg_no = known_face_reg_no[best_match_index]
-                name = student_names[best_match_index]
-                present_people.append({"Reg_No": reg_no, "Name": name})
-
-        timer.end()
-        create_log({
-            "log": f"Processed {image_path} in {timer.get_diff()} seconds",
-            "time": datetime.now()
-        })
-        print(f"Processed {image_path} in {timer.get_diff()} seconds")
-
-    return present_people
 
 
 def get_datetime(js_mod_dt):
