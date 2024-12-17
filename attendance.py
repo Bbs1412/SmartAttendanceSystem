@@ -6,13 +6,78 @@ import threading
 import numpy as np
 import face_recognition
 from datetime import datetime
+from dotenv import load_dotenv
 from concurrent.futures import ThreadPoolExecutor
+
+
+# ================================================================================
+# Loading all the required paths and files:
+# ================================================================================
+
+load_dotenv()
+static_url = os.environ.get('static_url')
+attendance_log_path = os.environ.get("attendance_log_file")
+class_attendance_path = os.environ.get('class_attendance')
+class_register_path = os.environ.get('class_register')
+
+attendance_log_file = os.path.join(static_url, attendance_log_path)
+class_attendance_file = os.path.join(static_url, class_attendance_path)
+class_register_file = os.path.join(static_url, class_register_path)
 
 # Initialize locks
 register_lock = threading.Lock()
 
-# Timer class to calculate time taken by any processes
 
+# ================================================================================
+# load the `class` json created from face modelling code (like a student register)
+# ================================================================================
+
+with open(class_register_file, 'r') as file:
+    tmp = json.load(file)
+# print(json.dumps(tmp, indent=4))
+
+# modify it to have all required things of actual register
+register = {}
+for stud in tmp:
+    register[stud['Reg_No']] = {
+        'Name': stud['Name'],
+        'Reg_No': stud['Reg_No'],
+        "Disp_name": stud['Disp_name'],
+        "Image": stud['Image'],
+        "Pickle": stud['Pickle'],
+
+        "First_In": -1,
+        "Last_In": -1,
+        "Attendance": {},
+        "Percentage": -1,
+        "Status": -1,
+    }
+# print(json.dumps(register, indent=4))
+
+
+# ================================================================================
+# Load saved face models from model pkl:
+# ================================================================================
+
+
+known_face_encodings = []
+known_face_reg_no = []
+
+for stud in register.keys():
+    file_name = register[stud]['Pickle']
+    file_path = os.path.join(static_url, "models", file_name)
+
+    with open(file_path, 'rb') as file:
+        known_face_encodings.append(pickle.load(file))
+
+    known_face_reg_no.append(register[stud]['Reg_No'])
+    print(
+        f"Loaded Model: ({register[stud]['Reg_No']}) {register[stud]['Name']}")
+
+
+# ================================================================================
+# Timer class to calculate time taken by any of the threads/processes etc.:
+# ================================================================================
 
 class Timer:
     def __init__(self):
@@ -21,9 +86,11 @@ class Timer:
         self.time_diff = None
 
     def start(self):
+        # self.start_time = time.time()
         self.start_time = datetime.now()
 
     def end(self):
+        # self.end_time = time.time()
         self.end_time = datetime.now()
         self.time_diff = (self.end_time - self.start_time).total_seconds()
 
@@ -31,11 +98,41 @@ class Timer:
         return self.time_diff
 
     def get_json(self, start_name='start_time', end_name='end_time', diff_name='time_diff'):
+        # outputs are in this format: "start_time"="2024-11-23T17:21:30.216641",
+        # return {
+        #     start_name: self.start_time.isoformat(),
+        #     end_name: self.end_time.isoformat(),
+        #     diff_name: self.time_diff
+        # }
+
+        # I want start and end times in this format: "23/11/2024, 5:21:04 pm"
         return {
             start_name: self.start_time.strftime("%d/%m/%Y, %I:%M:%S %p"),
             end_name: self.end_time.strftime("%d/%m/%Y, %I:%M:%S %p"),
             diff_name: self.time_diff
         }
+
+    def help(self):
+        _help = """
+            To use this Timer class, do the following:
+            1. Create an object of Timer class
+                t = Timer()
+            2. Start the timer:
+                t.start()
+            3. End the timer:
+                t.end()
+            4. Get the time difference:
+                t.get_time_diff()
+            5. Get the time records in json format:
+                t.get_json()
+            6. To save json:
+                with open("time.json", "w") as f:
+                json.dump(t.get_json(), f, indent=4)
+            *** That's it! ***
+        """
+        print(_help)
+        return _help
+
 
 
 # Logging helper functions to save logs:
@@ -52,61 +149,6 @@ def export_logs():
     """Exports the logs to the json file at  once (at end of the process)"""
     with open("logs.json", "w") as f:
         json.dump(logs, f, indent=4)
-
-
-# Initialize variables for models path
-models_path = 'Models/'
-
-# Load known face encodings and student register
-known_face_encodings = []
-known_face_reg_no = []
-student_names = []
-
-# load the `class` json created from face modelling code (like a student register)
-register_file = 'register.json'
-register = {}
-
-with open(register_file, 'r') as file:
-    register_data = json.load(file)
-
-    for stud in register_data:
-        register[stud['Reg_No']] = {
-            'Name': stud['Name'],
-            'Reg_No': stud['Reg_No'],
-            "Disp_name": stud['Disp_name'],
-            "Image": stud['Image'],
-            "Pickle": stud['Pickle'],
-
-            "First_In": -1,
-            "Last_In": -1,
-            "Attendance": {},
-            "Percentage": -1,
-            "Status": -1,
-        }
-
-    create_log({"log": "Loaded student register", "time": datetime.now()})
-    # print(json.dumps(register, indent=4))
-
-
-# Load saved face models from model pkl:
-known_face_encodings = []
-known_face_reg_no = []
-
-for stud in register.keys():
-    file_name = register[stud]['Pickle']
-    file_path = os.path.join("models", file_name)
-
-    with open(file_path, 'rb') as file:
-        known_face_encodings.append(pickle.load(file))
-
-    known_face_reg_no.append(register[stud]['Reg_No'])
-
-    create_log({
-        "log": f"Loaded Model: ({register[stud]['Reg_No']}) {register[stud]['Name']}",
-        "time": datetime.now()}
-    )
-    print(
-        f"Loaded Model: ({register[stud]['Reg_No']}) {register[stud]['Name']}")
 
 
 # Function to check attendance for a list of images
