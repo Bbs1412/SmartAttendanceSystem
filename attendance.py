@@ -223,6 +223,11 @@ def export_logs():
         # json.dump(logs, f)
 
 
+# ================================================================================
+# Main register update function:
+# To update the attendance register with each frame
+# Handles concurrent threads and locking
+# ================================================================================
 
 def get_datetime(js_mod_dt):
     "Gives the frame number and datetime in datetime (python)'s std format"
@@ -256,9 +261,13 @@ def update_register(present, timestamp):
                     saved_dt, saved_frame = get_datetime(
                         register[reg_no]['First_In'])
 
-                    # if curr dt came earlier or the frame number is smaller than saved one within the same dt stamp
-                    if (curr_dt < saved_dt) or (curr_dt == saved_dt and curr_frame < saved_frame):
+                    # if curr dt-stamp came earlier than saved one (so far),
+                    #   or (if the saved time stamp is same)
+                    #      (and) the frame number is smaller than saved one
+                    if (curr_dt < saved_dt) or (
+                            curr_dt == saved_dt and curr_frame < saved_frame):
                         register[reg_no]['First_In'] = timestamp
+                    # else, keep the saved one (as it is older)
 
                 # If last_in is not init, then put the curr stamp,
                 # else, compare and keep newer stamp...
@@ -271,15 +280,60 @@ def update_register(present, timestamp):
                     saved_dt, saved_frame = get_datetime(
                         register[reg_no]['Last_In'])
 
-                    # if curr dt came later or the frame number is larger than saved one within the same dt stamp
-                    if (curr_dt > saved_dt) or (curr_dt == saved_dt and curr_frame > saved_frame):
+                    # if curr dt came later than the saved one (so far),
+                    #  or (if the saved time stamp is same)
+                    #     (and) the frame number is larger than saved one
+                    if (curr_dt > saved_dt) or (
+                            curr_dt == saved_dt and curr_frame > saved_frame):
                         register[reg_no]['Last_In'] = timestamp
+                    # else, keep the saved one (as it is newer)
 
             else:
                 register[reg_no]['Attendance'][timestamp] = False
 
 
-# Check attendance for each image and update the register
+# ================================================================================
+# Save the register to the file:
+# ================================================================================
+
+def mark_attendance():
+    """Marks the attendance of each student in the register (75% criteria)"""
+
+    for stud in register.keys():
+        stud = register[stud]
+        present = 0
+        absent = 0
+
+        # iterate over all the time-stamps:
+        for stamp in stud['Attendance'].keys():
+            # print(stud['Attendance'][stamp])
+            if (stud['Attendance'][stamp]):
+                present += 1
+            else:
+                absent += 1
+
+        percentage = round((present / (present + absent)) * 100)
+        stud['Percentage'] = percentage
+        status = 'Present' if percentage >= 75 else 'Absent'
+        stud['Status'] = status
+
+        # print(f'Present: {present}, Absent: {absent}')
+        # print(f'Status: {status}, Percentage: {percentage}')
+
+
+def save_register():
+    """Saves the register to the file"""
+    mark_attendance()
+
+    json_file = class_attendance_file
+    with open(json_file, "w") as f:
+        json.dump(register, f, indent=4)
+
+
+# ================================================================================
+# Main function which controls flow of events per image-thread:
+# ================================================================================
+
 def check_image(args):
     i, to_check, timestamp = args
     timer = Timer()
@@ -328,37 +382,6 @@ def driver_function(to_check: list, timestamp: list):
     export_logs()
 
 
-# Function to mark attendance and save the register
-def mark_attendance():
-    for stud in register.keys():
-        stud = register[stud]
-        present = 0
-        absent = 0
-
-        # iterate over all the time-stamps:
-        for stamp in stud['Attendance'].keys():
-            # print(stud['Attendance'][stamp])
-            if (stud['Attendance'][stamp]):
-                present += 1
-            else:
-                absent += 1
-
-        percentage = round((present / (present + absent)) * 100)
-        stud['Percentage'] = percentage
-        status = 'Present' if percentage >= 75 else 'Absent'
-        stud['Status'] = status
-
-        # print(f'Present: {present}, Absent: {absent}')
-        # print(f'Status: {status}, Percentage: {percentage}')
-
-
-# Save the register to a json file
-def save_register():
-    mark_attendance()
-
-    json_file = os.environ.get('class_attendance')
-    with open(json_file, "w") as f:
-        json.dump(register, f, indent=4)
 
 
 # List of image paths to check attendance
