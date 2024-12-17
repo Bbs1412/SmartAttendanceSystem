@@ -359,38 +359,74 @@ def check_image(args):
         'people_present': present,
     })
 
+    # if do not want nested json, then:
+    # create_log({
+    #     'timestamp': timestamp[i],
+    #     **timer.get_json(),
+    #     'register_lock_time': timer_for_lock.get_diff(),
+    #     'people_present': present,
+    # })
 
-# Driver function to check attendance for multiple images
+
+# ================================================================================
+# Driver function to run the whole (batch) process:
+# ================================================================================
+
 def driver_function(to_check: list, timestamp: list):
+    # delete old logs file if present (otherwise, logs will be appended to some old data):
+    if os.path.exists(attendance_log_file):
+        os.remove(attendance_log_file)
+
     timer_ = Timer()
     timer_.start()
 
     # max_workers = 5
     max_workers = os.cpu_count()
 
-    # with ThreadPoolExecutor(max_workers=max_workers) as executor:
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        executor.map(check_image, [(i, to_check, timestamp)
-                     for i in range(len(to_check))])
+        executor.map(
+            check_image,
+            [(i, to_check, timestamp) for i in range(len(to_check))]
+        )
 
     timer_.end()
-    create_log({'title': 'final log', **timer_.get_json(
-        start_name='calc_start_time',
-        end_name='calc_end_time',
-        diff_name='calc_time_taken'
-    )})
+
+    # Do not want nested json, so:
+    create_log({
+        'title': 'final log',
+        **timer_.get_json(
+            start_name='calc_start_time',
+            end_name='calc_end_time',
+            diff_name='calc_time_taken'
+        )
+    })
+
+    # To get nested json:
+    # create_log({
+    #     'title': 'final log',
+    #     'time_taken': timer_.get_json(
+    #         start_name='calc_start_time',
+    #         end_name='calc_end_time',
+    #         diff_name='calc_time_taken'
+    #     ),
+    # })
+
     export_logs()
+    save_register()
 
 
+# ================================================================================
+# Testing:
+# ================================================================================
 
+# with open("./_uploaded_data.json", 'r') as f:
+#     uploaded = json.load(f)
 
-# List of image paths to check attendance
-image_paths = ['image1.jpg', 'image2.jpg', 'image3.jpg']
+# py_timestamps = uploaded['py']
+# js_timestamps = uploaded['js']
+# js_mod_timestamps = uploaded['js_mod']
+# filenames = uploaded['files']
 
-# Call the function to check attendance
-present = check_attendance(image_paths)
-create_log({"log": f"Present students: {present}", "time": datetime.now()})
-print("Present students:", present)
-
-# Export logs to json file
-export_logs()
+# driver_function(filenames, js_mod_timestamps)
+# save_register()
+# # print()
