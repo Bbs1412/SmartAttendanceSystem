@@ -4,6 +4,9 @@ import json
 import pandas as pd
 from datetime import datetime
 from dotenv import load_dotenv
+from attendance import save_register
+from attendance import driver_function
+from image_processor import process_image
 
 from flask import (Flask, render_template, request,
                    send_file, send_from_directory, jsonify)
@@ -58,17 +61,12 @@ def upload_video():
     frames = eval(frames_data)
     no_of_frames_recvd = len(frames)
 
-    def process_image(a, b):
-        # function under development
-        ...
-        return [], [], []
-    
     # get the timestamps str response -> list
     js_timestamps = eval(timestamps)
     file_names, py_timestamps, js_mod_timestamps = process_image(
         js_timestamps, frames)
 
-    file = os.path.join(static_url, "_uploaded_data.json")
+    file = os.path.join(static_url, "Jsons/", "_uploaded_data.json")
     with open(file, 'w') as f:
         json.dump({'files': file_names,
                    'py': py_timestamps,
@@ -81,6 +79,7 @@ def upload_video():
                     'time': f'{round(t2-t1, 4)} secs!'}), 200
 
 
+# Route to start attendance calculation on server:
 @app.route('/results', methods=['GET'])
 def results():
     return render_template('results.html'), 200
