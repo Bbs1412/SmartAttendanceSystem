@@ -80,6 +80,19 @@ def upload_video():
 
 
 # Route to start attendance calculation on server:
+@app.route('/calc_attendance', methods=['GET'])
+def calc_attendance():
+    t1 = time.time()
+    driver_function(file_names, js_mod_timestamps)
+    save_register()
+    t2 = time.time()
+
+    return jsonify({"status": "completed",
+                    "response": "Attendance calculation successful",
+                    'time': f'{round(t2-t1, 3)} secs'
+                    }), 200
+
+
 @app.route('/results', methods=['GET'])
 def results():
     # Load attendance data from JSON file
