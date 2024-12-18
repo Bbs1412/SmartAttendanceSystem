@@ -82,7 +82,36 @@ def upload_video():
 # Route to start attendance calculation on server:
 @app.route('/results', methods=['GET'])
 def results():
-    return render_template('results.html'), 200
+    # Load attendance data from JSON file
+    path = os.path.join(os.environ.get('static_url'),
+                        os.environ.get('class_attendance'))
+    with open(path, 'r') as file:
+        register = json.load(file)
+
+    # Update attendance data with extracted time
+    for student_id, details in register.items():
+        # Extract time for "First_In" and "Last_In" if available
+        details['First_In'] = extract_time(details['First_In'])
+        details['Last_In'] = extract_time(details['Last_In'])
+
+    # Pass the attendance register to the template
+    # Pick whatever data you want to display in the results page {{ using this }}
+    return render_template('results.html', register=register), 200
+
+
+# Function to extract the time by splitting the string
+def extract_time(date_time_string):
+    try:
+        # If the input is an integer, return "N/A"
+        if isinstance(date_time_string, int):
+            return "N/A"
+
+        # Split by comma and extract the second element (the time)
+        return date_time_string.split(',')[1].strip()
+    except (IndexError, AttributeError):
+        # Catch IndexError (for missing commas) or AttributeError (if input is not a string)
+        return "N/A"
+
 
 if __name__ == '__main__':
     app.run(debug=True)
