@@ -329,7 +329,9 @@ def save_register():
     with open(json_file, "w") as f:
         json.dump(register, f, indent=4)
 
-
+    with open("./assets/results.json", "w") as f:
+        json.dump(register, f, indent=4)
+    
 # ================================================================================
 # Main function which controls flow of events per image-thread:
 # ================================================================================
