@@ -23,7 +23,8 @@ os.makedirs(jsons_path, exist_ok=True)
 
 # Path to save output JSON file for trained models as class register:
 class_register_json = os.environ.get('class_register')
-class_register_file = os.path.join(jsons_path, class_register_json)
+# class_register_file = os.path.join(jsons_path, class_register_json)
+class_register_file = os.path.join(class_register_json)
 
 
 class Person:
@@ -93,7 +94,7 @@ for p in people:
         print("\t\t[#] Skipping the model creation...")
         print()
         continue
-    
+
     else:
         try:
             print("\t\t[#] Modelling the image...")
