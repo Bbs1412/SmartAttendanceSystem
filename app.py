@@ -112,6 +112,39 @@ def results():
     return render_template('results.html', register=register), 200
 
 
+# Save attendance data to Excel with timestamped filename:
+@app.route('/download')
+def download_excel():
+    # Load attendance data from JSON file
+    path = os.path.join(static_url, os.environ.get('class_attendance'))
+    with open(path, 'r') as file:
+        register = json.load(file)
+
+    # Convert the attendance register to a DataFrame
+    data = []
+    for reg_no, details in register.items():
+        info = {
+            'Reg No': reg_no,
+            # 'Reg No': details['Reg No'],
+            'Name': details['Name'],
+            'In Time': extract_time(details['First_In']),
+            'Out Time': extract_time(details['Last_In']),
+            'Percentage': details['Percentage'],
+            'Status': details['Status']
+        }
+
+        data.append(info)
+
+    df = pd.DataFrame(data, columns=data[0].keys())
+
+    file_name = f'{datetime.now().strftime("%d-%m-%Y_%H-%M-%S")}.xlsx'
+    file_path = os.path.join(
+        static_url, os.environ.get('excel_folder'), file_name)
+
+    df.to_excel(file_path, index=False)
+    return send_file(file_path, as_attachment=True)
+
+
 # Function to extract the time by splitting the string
 def extract_time(date_time_string):
     try:
