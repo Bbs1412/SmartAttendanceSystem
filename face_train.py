@@ -80,6 +80,7 @@ people = [
 ]
 
 
+# Train the models and save them as pickle files
 class_register = []
 for p in people:
     p.view()
@@ -112,7 +113,7 @@ for p in people:
     print()
 
 
-# Define the path for the JSON file
+# Save the output JSON file for trained models as class register
 with open(class_register_file, "w") as file:
     json.dump(class_register, file, indent=4)
 print(F"Saved file: `{class_register_file}`")
