@@ -137,9 +137,11 @@ def download_excel():
 
     df = pd.DataFrame(data, columns=data[0].keys())
 
+    folder_path = os.path.join(static_url, os.environ.get('excel_folder'))
+    os.makedirs(folder_path, exist_ok=True)
+
     file_name = f'{datetime.now().strftime("%d-%m-%Y_%H-%M-%S")}.xlsx'
-    file_path = os.path.join(
-        static_url, os.environ.get('excel_folder'), file_name)
+    file_path = os.path.join(folder_path, file_name)
 
     df.to_excel(file_path, index=False)
     return send_file(file_path, as_attachment=True)
