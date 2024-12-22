@@ -1,24 +1,24 @@
 # Smart Attendance System
 Smart Attendance System to automate the attendance calculation in lectures using Python.
-
-
-## Description
+- this is the project Description
 - add the Description of the project here later...
 
 
 ## Index:
 - [Smart Attendance System](#smart-attendance-system)
-- [General Instructions](#general-instructions)
+- [Project Details](#project-details)
+    - [Aim](#aim)
+    - [Methodology](#methodology)
+    - [Features](#features)
+    - [Tech Stack](#tech-stack)
 - [Steps to run](#steps-to-run)
 - [Extra Measures](#extra-measures)
+    - [General Instructions](#general-instructions)
     - [Folders](#folders)
     - [Template Rendering Errors](#template-rendering-errors)
-- [Remember](#remember)
+- [Milestones](#milestones)
+- [License](#license)
 - [Contact](#contact)
-
-
-## General Instructions:
-- If some errors occur, first try deleting the `__pycache__` folder and then try again with server restart
 
 
 ## Steps to run:
@@ -86,8 +86,18 @@ Smart Attendance System to automate the attendance calculation in lectures using
     python app.py
     ```
 
+1. Open the browser and go to the following URL (default)
+    ```URL
+    http://localhost:5000
+    ```
 
 ## Extra Measures:
+
+### General Instructions:
+- Using Conda for environment creation may help ease the process and might make it faster.
+- If some errors occurs:
+    1. First try deleting the `__pycache__` folder
+    1. Restart the server and run the application again.
 
 ### Folders:
 - Although the code includes conditions to dynamically check and resolve issues, if an error occurs or for re-verification, please check the following folders:
@@ -96,10 +106,11 @@ Smart Attendance System to automate the attendance calculation in lectures using
     | `assets/` | Should contain all the css, js, images, etc. | Cloned from repository |
     | `Templates/` | Should contain all the html files | Cloned from repository |
     | `Pics/` | Should contain all the images of people to be recognized | Must be done by user |
-    | `Excels/` | Empty initially | Dynamically Checked in ?? |
-    | `Uploads/` | Empty initially | Dynamically Checked in ?? |
+    | `Excels/` | Empty initially | Dynamically Checked in `app.py` |
+    | `Uploads/` | Empty initially | Dynamically Checked in `image_processor.py` |
     | `Jsons/` | Empty initially | Dynamically Checked in `face_train.py` |
     | `Models/` | Empty initially | Dynamically Checked in `face_train.py` |
+    | `.env` | (File) Should contain all the environment variables | Cloned from repository |
 - In case you have changed the env variables, check folders accordingly
 
 ### Template Rendering Errors:
