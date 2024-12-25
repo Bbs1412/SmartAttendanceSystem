@@ -1,15 +1,20 @@
 # Tested on python versions 
-#   venv  py=3.9.20 
-#   conda py=3.11.6 
+#   venv  py=3.11.6
+#   conda py=3.9.20
 
+
+# Pip and Conda (both) available packages:
 numpy==1.26.4
 pandas==2.2.3
-pickle4==0.0.1
 flask==3.0.3
+Werkzeug==3.0.3     # Make sure this is exact same version, this is the trouble maker!!!!!!!
+openpyxl==3.1.5
+
+
+# Pip only packages:
+pickle4==0.0.1
 python-dotenv==1.0.1
 opencv-python==4.10.0.84
 face-recognition==1.3.0
-Werkzeug==3.0.3     # Make sure this is exact same version, this is the trouble maker!!!!!!!
-openpyxl==3.1.5
 pprintpp            # Optional
 
