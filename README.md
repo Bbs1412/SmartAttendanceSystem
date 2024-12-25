@@ -16,10 +16,15 @@ Smart Attendance System to automate the attendance calculation in lectures using
     - [General Instructions](#general-instructions)
     - [Folders](#folders)
     - [Template Rendering Errors](#template-rendering-errors)
-- [Milestones](#milestones)
 - [License](#license)
 - [Contact](#contact)
 
+
+## Project Details:
+### Aim:
+### Methodology:
+### Features:
+### Tech Stack:
 
 ## Steps to run:
 
