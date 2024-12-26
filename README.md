@@ -1,7 +1,5 @@
 # Smart Attendance System
-Smart Attendance System to automate the attendance calculation in lectures using Python.
-- this is the project Description
-- add the Description of the project here later...
+The Smart Attendance System automates attendance calculation during lectures using a video uploaded through a user-friendly interface. The system processes the video frames with OpenCV, identifies students using pre-trained face encodings, and calculates attendance based on a threshold of 75% frame presence. It ensures concurrency with threading and provides results in a downloadable Excel format.
 
 
 ## Index:
@@ -20,30 +18,51 @@ Smart Attendance System to automate the attendance calculation in lectures using
 - [Contact](#contact)
 
 
-## Project Details:
+## 🎯 Project Details:
 ### Aim:
+To automate attendance calculation efficiently using face recognition, ensuring accuracy and convenience for faculty and students.
+
 ### Methodology:
++ Video is pre-processed and uploaded from the frontend and sent to a Flask server.
++ Frames are processed using OpenCV for face recognition.
++ Captured `face Locations` are compared against pre-saved encodings using `face distance` and `face encodings` to identify individuals.
++ Face encodings are a one-time process completed during registration of new student.
++ Attendance is calculated based on frame presence with a threshold of 75%.
++ Results are rendered on a webpage and made downloadable in Excel format.
+
 ### Features:
++ Upload video for attendance processing.
++ Real-time face recognition with concurrency using threading, locking for consistent read-write operations.
++ Faster operation and time-saving due to parallel processing. 
++ Threshold-based attendance marking for customizable and accurate results.
++ Faculty access to detailed results and downloadable attendance records.
++ Web-based interface for ease of use.
+
 ### Tech Stack:
++ **Backend:** Python, Flask
++ **Frontend:** HTML, CSS, JavaScript
++ **Libraries:** OpenCV, face_recognition, threading
++ **Data Formats:** JSON, Excel
++ **Tools:** Virtual environment (venv), Python's standard libraries
 
-## Steps to run:
+## 🚀 Steps to run:
 
-1. Clone the repository
+1. Clone the repository:
     ```bash
     git clone --depth 1 https://github.com/Bbs1412/SmartAttendanceSystem
     ```
     
-1. Navigate to the project directory
+1. Navigate to the project directory:
     ```bash
     cd SmartAttendanceSystem
     ```
 
-1. Create a virtual environment
+1. Create a virtual environment:
     ```bash
     python -m venv venv
     ```
 
-1. Activate the virtual environment
+1. Activate the virtual environment:
     - Windows
         ```bash
         venv\Scripts\activate
@@ -53,22 +72,22 @@ Smart Attendance System to automate the attendance calculation in lectures using
         source venv/bin/activate
         ```
 
-1. Install the required packages
+1. Install the required packages:
     ```bash
     pip install -r requirements.txt
     ```
 
-1. Set the environment variables (Optional)
+1. Set the environment variables (Optional):
     - Open the `.env` file and update the environment variables if needed or keep the default values
 
-1. Adding the images
+1. Adding the images:
     - Create a folder named `Pics` in the project directory
         ```bash
         mkdir Pics
         ```
     - Add the images of the people you want to recognize in the `Pics` folder.
     
-1. Train the models
+1. Train the models:
     - Open the `face_train.py` file
     - Scroll down (~ line 73) to update the ***people*** list
     - Add all the people you want to recognize in the ***people*** list by calling:
@@ -86,17 +105,17 @@ Smart Attendance System to automate the attendance calculation in lectures using
         python face_train.py
         ```
 
-1. Run the app
+1. Run the app:
     ```bash
     python app.py
     ```
 
-1. Open the browser and go to the following URL (default)
+1. Open the browser and go to the following URL (default):
     ```URL
     http://localhost:5000
     ```
 
-## Extra Measures:
+## ℹ️ Extra Measures:
 
 ### General Instructions:
 - Using Conda for environment creation may help ease the process and might make it faster.
