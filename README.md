@@ -45,6 +45,7 @@ To automate attendance calculation efficiently using face recognition, ensuring 
 + **Data Formats:** JSON, Excel
 + **Tools:** Virtual environment (venv), Python's standard libraries
 
+
 ## 🚀 Steps to run:
 
 1. Clone the repository:
@@ -115,6 +116,7 @@ To automate attendance calculation efficiently using face recognition, ensuring 
     http://localhost:5000
     ```
 
+
 ## ℹ️ Extra Measures:
 
 ### General Instructions:
@@ -145,14 +147,16 @@ To automate attendance calculation efficiently using face recognition, ensuring 
     ```
 
 
----
+## 💡 Contributions:
+   Any contributions or suggestions are welcome! 
 
-👇 If this still appears on Readme, please contact me 😁
 
----
- 
-## Remember:
-- in the git clone command, add the `--depth 1` flag to clone only the latest commit and not the entire history
-- Add .env file in root directory (on github push)
-- Parallelized calc for attendance
-- Add emojis in the README.md file
+## 📜 License: 
+[![Code-License](https://img.shields.io/badge/License%20-GNU%20--%20GPL%20v3.0-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+- This project is licensed under the `GNU General Public License v3.0`
+- See the [LICENSE](LICENSE) file for details.
+- You can use the code with proper credits to the author.
+
+
+## 📧 Contact:
+- **Email -** [bhushanbsongire@gmail.com](mailto:bhushanbsongire@gmail.com)
