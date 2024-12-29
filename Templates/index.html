@@ -1,54 +1,87 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Attendance System</title>
+    <title>Smart Attendance System</title>
     <link rel="icon" href="/assets/infinity.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="/assets/style.css">
 </head>
 
 <body>
-    <div id="main">
-        <h1>Video Attendance System</h1>
-        <form id="uploadForm" action="/upload_video" method="post" enctype="multipart/form-data">
-            <div>
-                <div class="video-container">
-                    <video id="video" autoplay></video>
-                    <img id="placeholderImage" src="/assets/camera.png" alt="Placeholder Image">
-                </div>
-                <button type="button" id="startCamera">Start Camera</button>
-                <button type="button" id="startRecord" disabled>Start Recording</button>
-                <button type="button" id="stopRecord" disabled>Stop Recording</button>
+    <input type="checkbox" id="switch-button">
+    <label for="switch-button">
+        <i class="fas fa-sun"></i>
+        <i class="fas fa-moon"></i>
+    </label>
+
+    <div class="container" id="main">
+        <div class="card">
+            <div class="card-header">
+                <h1>Smart Attendance System</h1>
+                <p class="subtitle">Video-based Attendance Tracking</p>
             </div>
 
-            <!-- Hidden input for video data -->
-            <input type="hidden" name="video_data" id="videoData">
-            <input type="hidden" name="timestamps" id="timestamps">
-            <br><br>
+            <form id="uploadForm" action="/upload_video" method="post" enctype="multipart/form-data">
+                <div class="video-wrapper">
+                    <div class="video-container">
+                        <video id="video" autoplay></video>
+                        <div class="placeholder" id="placeholder">
+                            <!-- <img id="placeholderImage" src="/assets/camera.png" alt="Camera"> -->
+                            <img id="placeholderImage2" src="/assets/camera2.png" alt="Camera">
+                            <!-- <i class="fas fa-video"></i> -->
+                            <p>Camera Feed</p>
+                        </div>
+                    </div>
 
-            <span id="extracting_wait" style="display: none;">Extracting frames, please wait...</span>
-            <input type="submit" value="Upload Video" disabled>
-        </form>
-    </div>
+                    <div class="controls">
+                        <button type="button" id="startCamera" class="btn">
+                            <i class="fas fa-camera"></i>
+                            <span>Start Camera</span>
+                        </button>
+                        <button type="button" id="startRecord" class="btn" disabled>
+                            <i class="fas fa-record-vinyl"></i>
+                            <span>Record</span>
+                        </button>
+                        <button type="button" id="stopRecord" class="btn" disabled>
+                            <i class="fas fa-stop"></i>
+                            <span>Stop</span>
+                        </button>
+                    </div>
+                </div>
 
-    <div id="errBox">
-        <h1 id="proc_stat">Processing video, please wait...</h1>
-        <h2 id="upload_status"></h2>
-        <div id="attendance_div">
-            <img id="load" src="/assets/loading_5.gif" alt="Loading">
-            <h2 id="calc_attend">Checking Attendance...</h2>
+                <input type="hidden" name="video_data" id="videoData">
+                <input type="hidden" name="timestamps" id="timestamps">
+
+                <div class="upload-section">
+                    <div id="extracting_wait" class="status-message">
+                        <div class="spinner"></div>
+                        <span>Extracting frames...</span>
+                    </div>
+                    <button type="submit" class="btn submit-btn">
+                        <i class="fas fa-upload"></i>
+                        <span>Upload Video</span>
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
-    <!-- Loader Element -->
-    <div id="loader">
-        <img src="/assets/loading_5.gif" alt="Loading">
+    <div id="errBox" class="modal">
+        <div class="modal-content" id="proc_stat">
+            <h2>Processing video...</h2>
+            <img src="/assets/loading_4.gif" alt="Processing">
+
+            <p id="upload_status"></p>
+            <div id="attendance_div">
+                <div class="loader"></div>
+                <p id="calc_attend">Checking Attendance...</p>
+            </div>
+        </div>
     </div>
 
-
-    <!-- attach the script.js -->
     <script src="/assets/script.js"></script>
 </body>
 
