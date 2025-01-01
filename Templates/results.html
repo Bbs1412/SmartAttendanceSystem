@@ -98,6 +98,7 @@
 
     <table>
         <tr>
+            <th>Register Number</th>
             <th>Name</th>
             <th>In Time</th>
             <th>Out Time</th>
@@ -106,6 +107,7 @@
         </tr>
         {% for reg_no, student in register.items() %}
         <tr>
+            <td>{{ student['Reg_No'] }}</td>
             <td>{{ student['Name'] }}</td>
             <td>{{ student['First_In'] }}</td>
             <td>{{ student['Last_In'] }}</td>
@@ -132,7 +134,7 @@
             method: 'GET',
         }).then(response => {
             if (!response.ok) {
-                throw new Error('JS: Network response was not ok');
+                throw new Error('Network response was not ok');
             }
             console.log('JS: Got the main results sheet.');
             return response.json();
@@ -142,7 +144,7 @@
                 console.log(result_object);
             })
             .catch(error => {
-                console.error('JS: There was a problem with the fetch operation:', error);
+                console.error('There was a problem with the fetch operation:', error);
             });
     </script>
 </body>
