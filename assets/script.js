@@ -119,7 +119,7 @@ cameraButton.addEventListener('click', () => {
 
 startRecordingBtn.addEventListener('click', () => {
     // // Capture start timestamp
-    // startTimestamp = new Date().toISOString(); 
+    // startTimestamp = new Date().toISOString();
     startTimestamp = new Date();
     startRecording();
     startRecordingBtn.disabled = true;
@@ -247,8 +247,8 @@ function submitForm() {
             console.log(data);
 
             if (data.status === 'success') {
-                document.getElementById('proc_stat').style.display = 'block';
-                document.getElementById('attendance_div').style.display = 'block';
+                // ?? document.getElementById('proc_stat').style.display = 'block';
+                // ?? document.getElementById('attendance_div').style.display = 'block';
                 // console.log("Vid Sent Successfully");
                 document.getElementById('upload_status').innerHTML = "<p>✅ Video Sent Successfully!<p>";
 
@@ -283,3 +283,16 @@ function calculate_attendance() {
         })
 }
 
+
+// ======================================================================================
+// Theme switch functionality:
+// ======================================================================================
+const themeSwitch = document.getElementById('switch-button');
+
+themeSwitch.addEventListener('change', () => {
+    if (themeSwitch.checked) {
+        document.documentElement.setAttribute('data-theme', 'light');
+    } else {
+        document.documentElement.removeAttribute('data-theme');
+    }
+});
