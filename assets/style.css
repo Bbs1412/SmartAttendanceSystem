@@ -312,3 +312,21 @@ video {
     transform: translate(-50%, -50%);
     text-align: center;
 }
+
+
+/* ===================================================================================== */
+/* Footer */
+/* ===================================================================================== */
+
+
+footer {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 1rem;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--bg-primary);
+    border-top: 1px solid var(--bg-secondary);
+}

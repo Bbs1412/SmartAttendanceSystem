@@ -247,9 +247,7 @@ function submitForm() {
             console.log(data);
 
             if (data.status === 'success') {
-                // ?? document.getElementById('proc_stat').style.display = 'block';
-                // ?? document.getElementById('attendance_div').style.display = 'block';
-                // console.log("Vid Sent Successfully");
+                console.log("JS: Vid Sent Successfully");
                 document.getElementById('upload_status').innerHTML = "<p>✅ Video Sent Successfully!<p>";
 
                 calculate_attendance();
