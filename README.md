@@ -4,18 +4,18 @@ The Smart Attendance System automates attendance calculation during lectures usi
 
 ## Index:
 - [Smart Attendance System](#smart-attendance-system)
-- [Project Details](#project-details)
+- [Project Details](#-project-details)
     - [Aim](#aim)
     - [Methodology](#methodology)
     - [Features](#features)
     - [Tech Stack](#tech-stack)
-- [Steps to run](#steps-to-run)
-- [Extra Measures](#extra-measures)
+- [Steps to run](#-steps-to-run)
+- [Extra Measures](#ℹ️-extra-measures)
     - [General Instructions](#general-instructions)
     - [Folders](#folders)
     - [Template Rendering Errors](#template-rendering-errors)
-- [License](#license)
-- [Contact](#contact)
+- [License](#-license)
+- [Contact](#-contact)
 
 
 ## 🎯 Project Details:
