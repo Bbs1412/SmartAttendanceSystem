@@ -14,6 +14,7 @@ The Smart Attendance System automates attendance calculation during lectures usi
     - [General Instructions](#general-instructions)
     - [Folders](#folders)
     - [Template Rendering Errors](#template-rendering-errors)
+- [Contributions](#-contributions)
 - [License](#-license)
 - [Contact](#-contact)
 
@@ -147,7 +148,7 @@ To automate attendance calculation efficiently using face recognition, ensuring 
     ```
 
 
-## 💡 Contributions:
+## 🤝 Contributions:
    Any contributions or suggestions are welcome! 
 
 
