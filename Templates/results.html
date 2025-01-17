@@ -19,6 +19,39 @@
     </label>
 
     <div class="results-container">
+        <div class="timing-container">
+            <div class="timing-card">
+                <div class="timing-header">Class Timing Details</div>
+                <div class="timing-content">
+                    <div class="timing-section">
+                        <h3>Start Time</h3>
+                        <div class="time-display">
+                            <span class="time">{{timings.start.hour}}:{{timings.start.minute}}:{{timings.start.second}}
+                                {{timings.start.pm}}</span>
+                            <span
+                                class="date">{{timings.start.day}}/{{timings.start.month}}/{{timings.start.year}}</span>
+                        </div>
+                    </div>
+                    <div class="timing-section">
+                        <h3>End Time</h3>
+                        <div class="time-display">
+                            <span class="time">{{timings.end.hour}}:{{timings.end.minute}}:{{timings.end.second}}
+                                {{timings.end.pm}}</span>
+                            <span class="date">{{timings.end.day}}/{{timings.end.month}}/{{timings.end.year}}</span>
+                        </div>
+                    </div>
+                    <div class="timing-section duration">
+                        <h3>Duration</h3>
+                        <div class="duration-display">
+                            <span>{{timings.duration.hours}} hours</span>
+                            <span>{{timings.duration.minutes}} minutes</span>
+                            <span>{{timings.duration.seconds}} seconds</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="results-header">
             <h1>Attendance Result</h1>
         </div>
