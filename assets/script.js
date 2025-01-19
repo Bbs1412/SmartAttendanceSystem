@@ -281,16 +281,3 @@ function calculate_attendance() {
         })
 }
 
-
-// ======================================================================================
-// Theme switch functionality:
-// ======================================================================================
-const themeSwitch = document.getElementById('switch-button');
-
-themeSwitch.addEventListener('change', () => {
-    if (themeSwitch.checked) {
-        document.documentElement.setAttribute('data-theme', 'light');
-    } else {
-        document.documentElement.removeAttribute('data-theme');
-    }
-});
