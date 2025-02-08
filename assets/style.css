@@ -191,3 +191,64 @@ video {
     text-align: center;
 }
 
+
+/* ===================================================================================== */
+/* No of frames */
+/* ===================================================================================== */
+/* Dropdown container */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background: var(--bg-secondary);
+    border-radius: 0.75rem;
+    padding: 0.5rem 1rem;
+    box-shadow: 0 4px 10px var(--shadow-color);
+    z-index: 100;
+    text-align: center;
+    min-width: 100px;
+}
+
+.dropdown-content p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+}
+
+.dropdown-content ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.dropdown-content ul li {
+    cursor: pointer;
+    padding: 0.5rem 0;
+    color: var(--text-primary);
+    transition: background 0.2s ease;
+}
+
+.dropdown-content ul li:hover {
+    background: var(--primary-color);
+    color: #fff;
+}
+
+/* Show dropdown on button click */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Dropdown button styling */
+.dropdown button {
+    width: 70px;
+    justify-content: center;
+}
+
+.dropdown-content ul li[data-value="20"]:hover {
+    background: var(--success-color);
+}
