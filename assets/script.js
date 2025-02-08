@@ -144,6 +144,28 @@ submitButton.addEventListener('click', (e) => {
 
 
 // ======================================================================================
+// No of frames to send:
+// ======================================================================================
+
+document.addEventListener('DOMContentLoaded', () => {
+    const frameSelectButton = document.getElementById('frameSelect');
+    const frameDisplay = document.getElementById('frameDisplay');
+    const dropdownItems = document.querySelectorAll('.dropdown-content ul li');
+
+    dropdownItems.forEach(item => {
+        item.addEventListener('click', () => {
+            const value = item.getAttribute('data-value');
+            frameDisplay.textContent = value;
+
+            // Add logic to handle frame count selection
+            console.log(`JS: Frame count set to: ${value}`);
+            no_of_frames_to_send = parseInt(value);
+        });
+    });
+});
+
+
+// ======================================================================================
 // Post processing: Frame Extraction and all...:
 // ======================================================================================
 
