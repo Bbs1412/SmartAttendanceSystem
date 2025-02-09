@@ -33,38 +33,42 @@
                             <p>Camera Feed</p>
                         </div>
                     </div>
+                </div>
 
-                    <div class="controls">
-                        <button type="button" id="startCamera" class="btn">
-                            <i class="fas fa-camera"></i>
-                            <span>Start Camera</span>
+                <div class="controls">
+                    <button type="button" id="startCamera" class="btn">
+                        <i class="fas fa-camera"></i>
+                        <span>Start Camera</span>
+                    </button>
+
+                    <button type="button" id="startRecord" class="btn" disabled>
+                        <i class="fas fa-record-vinyl"></i>
+                        <span>Record</span>
+                    </button>
+
+                    <button type="button" id="stopRecord" class="btn" disabled>
+                        <i class="fas fa-stop"></i>
+                        <span>Stop</span>
+                    </button>
+
+                    <div class="dropdown">
+                        <button type="button" id="frameSelect" class="btn">
+                            <!-- 
+                                <i class="fas fa-layer-group"></i>
+                                <i class="fas fa-film"></i>
+                                -->
+                            <i class="fas fa-images"></i>
+                            <span id="frameDisplay">Frames: 20</span>
                         </button>
-
-                        <button type="button" id="startRecord" class="btn" disabled>
-                            <i class="fas fa-record-vinyl"></i>
-                            <span>Record</span>
-                        </button>
-
-                        <button type="button" id="stopRecord" class="btn" disabled>
-                            <i class="fas fa-stop"></i>
-                            <span>Stop</span>
-                        </button>
-
-                        <div class="dropdown">
-                            <button type="button" id="frameSelect" class="btn">
-                                <i class="fas fa-list"></i>
-                                <span id="frameDisplay">5</span>
-                            </button>
-                            <div class="dropdown-content">
-                                <p>Number of Frames</p>
-                                <ul>
-                                    <li data-value="5">5</li>
-                                    <li data-value="10">10</li>
-                                    <li data-value="20">20</li>
-                                    <li data-value="50">50</li>
-                                    <li data-value="100">100</li>
-                                </ul>
-                            </div>
+                        <div class="dropdown-content">
+                            <p>Number of Frames</p>
+                            <ul>
+                                <li data-value="5">5</li>
+                                <li data-value="10">10</li>
+                                <li data-value="20">20</li>
+                                <li data-value="50">50</li>
+                                <li data-value="100">100</li>
+                            </ul>
                         </div>
                     </div>
                 </div>

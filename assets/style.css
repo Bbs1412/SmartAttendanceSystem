@@ -211,6 +211,9 @@ video {
     z-index: 100;
     text-align: center;
     min-width: 100px;
+
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .dropdown-content p {
@@ -245,10 +248,21 @@ video {
 
 /* Dropdown button styling */
 .dropdown button {
-    width: 70px;
+    display: flex;
+    align-items: center;
     justify-content: center;
+    gap: 0.5rem;
+    /* Space between icon and text */
+    width: auto;
+    /* Automatically adjust width */
+    padding: 0.75rem 1.5rem;
+    text-align: center;
 }
 
 .dropdown-content ul li[data-value="20"]:hover {
     background: var(--success-color);
+}
+
+.dropdown button i {
+    font-size: 1rem;
 }
