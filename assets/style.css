@@ -23,6 +23,7 @@ body {
 }
 
 
+
 /* ===================================================================================== */
 /* Video box and placeholders */
 /* ===================================================================================== */
@@ -82,7 +83,7 @@ video {
     background: var(--bg-secondary);
 }
 
-#placeholderImage2 {
+#placeholderImage {
     object-fit: cover;
     border-radius: 50%;
     /* transform: scale(1.2); */
@@ -265,4 +266,46 @@ video {
 
 .dropdown button i {
     font-size: 1rem;
+}
+
+
+/* ===================================================================================== */
+/* Recording indicator */
+/* ===================================================================================== */
+
+.recording-indicator {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    color: red;
+    font-weight: bold;
+    opacity: 0;
+    animation: none;
+}
+
+.recording-indicator i {
+    font-size: 1.5rem;
+}
+
+@keyframes flash {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.recording-active {
+    animation: flash 1.5s infinite;
+    opacity: 1;
 }
