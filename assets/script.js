@@ -23,6 +23,7 @@ const cameraButton = document.getElementById('startCamera');
 const startRecordingBtn = document.getElementById('startRecord');
 const stopRecordingBtn = document.getElementById('stopRecord');
 const submitButton = document.querySelector('button[type="submit"]');
+const recordingIndicator = document.getElementById('recordingIndicator');
 
 
 cameraButton.disabled = false;
@@ -118,10 +119,10 @@ cameraButton.addEventListener('click', () => {
 
 
 startRecordingBtn.addEventListener('click', () => {
-    // // Capture start timestamp
-    // startTimestamp = new Date().toISOString();
+    // startTimestamp = new Date().toISOString(); // Capture start timestamp
     startTimestamp = new Date();
     startRecording();
+    recordingIndicator.classList.add('recording-active');
     startRecordingBtn.disabled = true;
     stopRecordingBtn.disabled = false;
     submitButton.disabled = true;
@@ -130,6 +131,7 @@ startRecordingBtn.addEventListener('click', () => {
 stopRecordingBtn.addEventListener('click', () => {
     endTimestamp = new Date();
     stopRecording();
+    recordingIndicator.classList.remove('recording-active');
     startRecordingBtn.disabled = true;
     stopRecordingBtn.disabled = true;
     // submitButton.disabled = false; // let this be handled by frame extractor function
@@ -155,7 +157,8 @@ document.addEventListener('DOMContentLoaded', () => {
     dropdownItems.forEach(item => {
         item.addEventListener('click', () => {
             const value = item.getAttribute('data-value');
-            frameDisplay.textContent = value;
+            frameDisplay.textContent = `Frames: ${parseInt(value)}`;
+
 
             // Add logic to handle frame count selection
             console.log(`JS: Frame count set to: ${value}`);

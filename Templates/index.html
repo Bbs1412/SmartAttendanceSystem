@@ -19,7 +19,7 @@
         <div class="card">
             <div class="card-header">
                 <h1>Smart Attendance System</h1>
-                <p class="subtitle">Video-based Attendance Tracking</p>
+                <p class="subtitle">Video Based Attendance Tracking</p>
             </div>
 
             <form id="uploadForm" action="/upload_video" method="post" enctype="multipart/form-data">
@@ -27,48 +27,53 @@
                     <div class="video-container">
                         <video id="video" autoplay></video>
                         <div class="placeholder" id="placeholder">
-                            <!-- <img id="placeholderImage" src="/assets/camera.png" alt="Camera"> -->
-                            <img id="placeholderImage2" src="/assets/camera2.png" alt="Camera">
+                            <img id="placeholderImage" src="/assets/camera2.png" alt="Camera">
                             <!-- <i class="fas fa-video"></i> -->
                             <p>Camera Feed</p>
                         </div>
+
+                        <!-- Recording indicator -->
+                        <div class="recording-indicator" id="recordingIndicator">
+                            <i class="fas fa-circle"></i>
+                            <span>Recording</span>
+                        </div>
                     </div>
-                </div>
 
-                <div class="controls">
-                    <button type="button" id="startCamera" class="btn">
-                        <i class="fas fa-camera"></i>
-                        <span>Start Camera</span>
-                    </button>
+                    <div class="controls">
+                        <button type="button" id="startCamera" class="btn">
+                            <i class="fas fa-camera"></i>
+                            <span>Start Camera</span>
+                        </button>
 
-                    <button type="button" id="startRecord" class="btn" disabled>
-                        <i class="fas fa-record-vinyl"></i>
-                        <span>Record</span>
-                    </button>
+                        <button type="button" id="startRecord" class="btn" disabled>
+                            <i class="fas fa-record-vinyl"></i>
+                            <span>Record</span>
+                        </button>
 
-                    <button type="button" id="stopRecord" class="btn" disabled>
-                        <i class="fas fa-stop"></i>
-                        <span>Stop</span>
-                    </button>
+                        <button type="button" id="stopRecord" class="btn" disabled>
+                            <i class="fas fa-stop"></i>
+                            <span>Stop</span>
+                        </button>
 
-                    <div class="dropdown">
-                        <button type="button" id="frameSelect" class="btn">
-                            <!-- 
+                        <div class="dropdown">
+                            <button type="button" id="frameSelect" class="btn">
+                                <!-- 
                                 <i class="fas fa-layer-group"></i>
                                 <i class="fas fa-film"></i>
                                 -->
-                            <i class="fas fa-images"></i>
-                            <span id="frameDisplay">Frames: 20</span>
-                        </button>
-                        <div class="dropdown-content">
-                            <p>Number of Frames</p>
-                            <ul>
-                                <li data-value="5">5</li>
-                                <li data-value="10">10</li>
-                                <li data-value="20">20</li>
-                                <li data-value="50">50</li>
-                                <li data-value="100">100</li>
-                            </ul>
+                                <i class="fas fa-images"></i>
+                                <span id="frameDisplay">Frames: 20</span>
+                            </button>
+                            <div class="dropdown-content">
+                                <p>Number of Frames</p>
+                                <ul>
+                                    <li data-value="5">5</li>
+                                    <li data-value="10">10</li>
+                                    <li data-value="20">20</li>
+                                    <li data-value="50">50</li>
+                                    <li data-value="100">100</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
