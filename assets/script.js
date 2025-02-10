@@ -24,6 +24,7 @@ const startRecordingBtn = document.getElementById('startRecord');
 const stopRecordingBtn = document.getElementById('stopRecord');
 const submitButton = document.querySelector('button[type="submit"]');
 const recordingIndicator = document.getElementById('recordingIndicator');
+const previewIndicator = document.getElementById('previewIndicator');
 
 
 cameraButton.disabled = false;
@@ -89,6 +90,12 @@ function startRecording() {
     mediaRecorder.start(10);
 }
 
+// Fn to pass the recorded data to the recordedBlobs array
+function handleDataAvailable(event) {
+    if (event.data && event.data.size > 0) {
+        recordedBlobs.push(event.data);
+    }
+}
 
 function stopRecording() {
     console.log('JS: Recording stopped')
@@ -119,7 +126,6 @@ cameraButton.addEventListener('click', () => {
 
 
 startRecordingBtn.addEventListener('click', () => {
-    // startTimestamp = new Date().toISOString(); // Capture start timestamp
     startTimestamp = new Date();
     startRecording();
     recordingIndicator.classList.add('recording-active');
@@ -135,8 +141,9 @@ stopRecordingBtn.addEventListener('click', () => {
     startRecordingBtn.disabled = true;
     stopRecordingBtn.disabled = true;
     // submitButton.disabled = false; // let this be handled by frame extractor function
-    document.getElementById("extracting_wait").style.display = 'flex';
-    releaseCamera();
+    // document.getElementById("extracting_wait").style.display = 'flex';
+    // releaseCamera();
+    previewRecordedVideo();
 });
 
 submitButton.addEventListener('click', (e) => {
@@ -169,15 +176,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 // ======================================================================================
+// Preview the recorded video:
+// ======================================================================================
+
+// Function to preview the recorded video in the same container
+function previewRecordedVideo() {
+    // Create a Blob from the recorded data and set it to the video element to play it back
+    const superBuffer = new Blob(recordedBlobs, { type: 'video/webm' });
+
+    // Show the preview indicator
+    previewIndicator.classList.add('preview-active');
+    // previewIndicator.classList.remove('preview-active');
+
+    // Set the video source to the recorded Blob
+    video_box.src = URL.createObjectURL(superBuffer);
+    video_placeholder.style.display = 'none';
+    video_box.style.display = 'block';
+    video_box.controls = true;
+    video_box.loop = true;
+
+    // Show the 'extracting_wait' indicator
+    document.getElementById("extracting_wait").style.display = 'flex';
+
+    // Release the camera after recording
+    releaseCamera();
+}
+
+
+// ======================================================================================
 // Post processing: Frame Extraction and all...:
 // ======================================================================================
 
-// Fn to pass the recorded data to the recordedBlobs array
-function handleDataAvailable(event) {
-    if (event.data && event.data.size > 0) {
-        recordedBlobs.push(event.data);
-    }
-}
 
 // Fn to extract defined # of frames from the video at regular intervals:
 async function extractFrames(videoBlob, no_of_frames_to_send) {
