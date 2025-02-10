@@ -285,6 +285,11 @@ video {
     font-weight: bold;
     opacity: 0;
     animation: none;
+    /* little bg blur */
+
+    padding: 0.5rem;
+    border-radius: 20px;
+    background: rgba(0, 0, 0, 0.15);
 }
 
 .recording-indicator i {
@@ -306,6 +311,52 @@ video {
 }
 
 .recording-active {
+    animation: flash 1.5s infinite;
+    opacity: 1;
+}
+
+/* ===================================================================================== */
+/* Preview indicator */
+/* ===================================================================================== */
+
+.preview-indicator {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    color: #ff9800;
+    font-weight: bold;
+    opacity: 0;
+    animation: none;
+
+    /* little bg blur */
+    padding: 0.5rem;
+    border-radius: 20px;
+    background: rgba(0, 0, 0, 0.15);
+}
+
+.preview-indicator i {
+    font-size: 1.5rem;
+}
+
+@keyframes flash {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.preview-active {
     animation: flash 1.5s infinite;
     opacity: 1;
 }
