@@ -44,11 +44,11 @@ if (show_logs) { console.log('JS: Script loaded successfully'); }
 async function initialize_camera(constraints) {
     try {
         stream = await navigator.mediaDevices.getUserMedia(constraints);
-        show_live_video(stream);
-        console.log('JS: Camera initialized successfully');
+        return stream;
     } catch (e) {
         console.log('JS: Failed to initialize camera');
         console.error('navigator.getUserMedia error:', e);
+        return null;
     }
 }
 
@@ -56,6 +56,10 @@ async function initialize_camera(constraints) {
 // Fn which runs if camera is initialized successfully
 function show_live_video(stream) {
     console.log('JS: Showing live video')
+
+    // Hide the placeholder and show the video
+    video_placeholder.style.display = 'none';
+    video_box.style.display = 'block';
     video_box.srcObject = stream;
 }
 
@@ -116,12 +120,49 @@ function releaseCamera() {
 // Event Listeners to the buttons and call the respective functions:
 // ======================================================================================
 
-cameraButton.addEventListener('click', () => {
-    initialize_camera({ video: true });
+cameraButton.addEventListener('click', async () => {
+    // initialize_camera({ video: true });
+    // initialize_camera({ video: { width: 1280, height: 720 } });
+
+    const stream_1 = await initialize_camera({ video: true });
+    if (stream_1 === null) {
+        return;
+    }
+
+    console.log("JS: Camera initialized successfully.")
+    const videoTrack_1 = stream_1.getVideoTracks()[0];
+    const capabilities = videoTrack_1.getCapabilities();
+
+    console.info("JS: Resolution by default:", videoTrack_1.getSettings().width, "x", videoTrack_1.getSettings().height);
+
+    // Determine maximum supported resolution
+    const maxWidth = capabilities.width?.max || 1280;
+    const maxHeight = capabilities.height?.max || 720;
+
+    // // wait for 6 secs to see if res change is actually happening
+    // show_live_video(stream_1);
+    // await new Promise(resolve => setTimeout(resolve, 6000));
+
+    // Stop temporary stream
+    videoTrack_1.stop();
+    delete stream_1, videoTrack_1, capabilities;
+
+    // Re-initialize with optimal resolution
+    const stream = await initialize_camera({
+        video: {
+            width: { ideal: maxWidth },
+            height: { ideal: maxHeight }
+        }
+    });
+    const videoTrack = stream.getVideoTracks()[0];
+
+    // Show new resolution:
+    console.info('JS: Upgraded to resolution:', videoTrack.getSettings().width, "x", videoTrack.getSettings().height);
+
+    // Show the live video:
+    show_live_video(stream);
+
     startRecordingBtn.disabled = false;
-    // Hide the placeholder and show the video
-    video_placeholder.style.display = 'none';
-    video_box.style.display = 'block';
 });
 
 
