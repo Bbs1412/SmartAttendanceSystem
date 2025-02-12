@@ -23,6 +23,8 @@
         <div class="timing-card">
             <div class="timing-header">Class Timing Details</div>
             <div class="timing-content">
+                
+                <!-- Class Start Time -->
                 <div class="timing-section">
                     <h3>Start Time</h3>
                     <div class="time-display">
@@ -31,6 +33,8 @@
                         <span class="date">{{timings.start.day}}/{{timings.start.month}}/{{timings.start.year}}</span>
                     </div>
                 </div>
+
+                <!-- Class End Time -->
                 <div class="timing-section">
                     <h3>End Time</h3>
                     <div class="time-display">
@@ -39,14 +43,27 @@
                         <span class="date">{{timings.end.day}}/{{timings.end.month}}/{{timings.end.year}}</span>
                     </div>
                 </div>
+
+                <!-- Class Duration -->
                 <div class="timing-section duration">
-                    <h3>Duration</h3>
+                    <h3>Class Duration</h3>
                     <div class="duration-display">
                         <span>{{timings.duration.hours}} hours</span>
                         <span>{{timings.duration.minutes}} minutes</span>
                         <span>{{timings.duration.seconds}} seconds</span>
                     </div>
                 </div>
+
+                <!-- Server Attendance Processing Time -->
+                <div class="timing-section duration">
+                    <h3>Processing Time</h3>
+                    <div class="duration-display">
+                        <span>{{timings.processing_time.hours}} hours</span>
+                        <span>{{timings.processing_time.minutes}} minutes</span>
+                        <span>{{timings.processing_time.seconds}} seconds</span>
+                    </div>
+                </div>
+
             </div>
         </div>
 
