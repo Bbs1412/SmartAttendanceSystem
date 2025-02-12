@@ -8,40 +8,71 @@ from attendance import save_register
 from attendance import driver_function
 from image_processor import process_image
 
+from werkzeug.exceptions import RequestEntityTooLarge
 from flask import (Flask, render_template, request,
                    send_file, send_from_directory, jsonify)
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
+# Max file size limit:
+MB = 1024 * 1024
+app.config['MAX_CONTENT_LENGTH'] = 50 * MB
+
 # Global variables
 load_dotenv()
 static_url = os.environ.get('static_url')
+
+# Just initializing the variable, will be updated in the upload_video route
 no_of_frames_recvd = 20
 js_timestamps, py_timestamps, js_mod_timestamps = [], [], []
 file_names = []
 processing_complete = False
 
+for folders in [os.environ.get('upload_folder'), os.environ.get('excel_folder')]:
+    os.makedirs(os.path.join(static_url, folders), exist_ok=True)
 
+
+# @app.route('/testing', methods=('POST',))
+# def view_post():
+#     return request.data
+
+
+# Test route to check if the server is running:
+@app.route('/test', methods=['GET'])
+def test():
+    return jsonify({'status': 'success', 'message': 'Server is running!!'}), 200
+
+
+# Route to render the index.html template (home page)
 @app.route('/')
 def index():
     return render_template('index.html')
 
 
+# Route to serve the assets (CSS, JS, images, etc.)
 @app.route('/assets/<path:filename>')
 def send_asset(filename):
     # Ensure the directory you want to serve files from is secure and within the application's directory
-    # path = os.path.join(staatic_url, "Templates",'assets', filename)
+    # path = os.path.join(static_url, "Templates",'assets', filename)
     return send_from_directory('assets', filename)
 
 
+# Route to upload the video data and process the images:
 @app.route('/upload_video', methods=['POST'])
 def upload_video():
     t1 = time.time()
+
+    content_length = request.content_length  # Total request size in bytes
+    print(f"Total request size: {content_length} bytes")  # or use logging
+
+    # You can also check the headers directly:
+    print(f"Request Headers: {request.headers}")
+
     global no_of_frames_recvd, js_timestamps, py_timestamps, file_names, js_mod_timestamps
 
     # print(request.form)
-    """
+    sample_of_this_data = """
     ImmutableMultiDict([
         ('num_students', '2'),
         ('student_names', 'B, V'),
@@ -66,7 +97,8 @@ def upload_video():
     file_names, py_timestamps, js_mod_timestamps = process_image(
         js_timestamps, frames)
 
-    file = os.path.join(static_url, "Jsons/", "_uploaded_data.json")
+    file = os.path.join(static_url, os.environ.get('uploaded_data'))
+
     with open(file, 'w') as f:
         json.dump({'files': file_names,
                    'py': py_timestamps,
@@ -93,6 +125,7 @@ def calc_attendance():
                     }), 200
 
 
+# Route to get the final attendance data (result):
 @app.route('/results', methods=['GET'])
 def results():
     # Load attendance data from JSON file
@@ -137,14 +170,23 @@ def download_excel():
 
     df = pd.DataFrame(data, columns=data[0].keys())
 
-    folder_path = os.path.join(static_url, os.environ.get('excel_folder'))
-    os.makedirs(folder_path, exist_ok=True)
-
     file_name = f'{datetime.now().strftime("%d-%m-%Y_%H-%M-%S")}.xlsx'
-    file_path = os.path.join(folder_path, file_name)
+    file_path = os.path.join(
+        static_url, os.environ.get('excel_folder'), file_name)
 
     df.to_excel(file_path, index=False)
     return send_file(file_path, as_attachment=True)
+
+
+# Error handler for RequestEntityTooLarge
+@app.errorhandler(RequestEntityTooLarge)
+def handle_413_error(error):
+    return jsonify("The file you uploaded is too large. Please try again with a smaller file."), 413
+
+
+# ======================================================================
+# Some helper functions:
+# ======================================================================
 
 
 # Function to extract the time by splitting the string
@@ -162,4 +204,9 @@ def extract_time(date_time_string):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # app.run(debug=True)
+    app.run(
+        host='0.0.0.0',
+        port=5000,
+        debug=True,
+    )
