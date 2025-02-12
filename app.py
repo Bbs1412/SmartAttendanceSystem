@@ -29,7 +29,7 @@ js_timestamps, py_timestamps, js_mod_timestamps = [], [], []
 file_names = []
 processing_complete = False
 
-for folders in [os.environ.get('upload_folder'), os.environ.get('excel_folder')]:
+for folders in [os.environ.get('upload_folder'), os.environ.get('excel_folder'), 'jsons']:
     os.makedirs(os.path.join(static_url, folders), exist_ok=True)
 
 
@@ -140,9 +140,9 @@ def results():
         details['First_In'] = extract_time(details['First_In'])
         details['Last_In'] = extract_time(details['Last_In'])
 
-    # Pass the attendance register to the template
-    # Pick whatever data you want to display in the results page {{ using this }}
-    return render_template('results.html', register=register), 200
+    # Pick whatever data you want to display in the results page {{ using reg.item }} from the attendance register
+    # return render_template('results.html', register=register), 200
+    return render_template('results.html', register=register, timings=get_class_timings()), 200
 
 
 # Save attendance data to Excel with timestamped filename:
@@ -218,31 +218,31 @@ def get_class_timings():
 
     duration = (end - start).total_seconds()
     duration = {
-        'hours': int((duration % (24 * 3600)) // 3600),
-        'minutes': int((duration % 3600) // 60),
-        'seconds': int(duration % 60)
+        'hours': f"{int((duration % (24 * 3600)) // 3600):02d}",
+        'minutes': f"{int((duration % 3600) // 60):02d}",
+        'seconds': f"{int(duration % 60):02d}"
     }
 
     start_time = {
-        'day': start.day,
-        'month': start.month,
+        'day': f"{start.day:02d}",
+        'month': f"{start.month:02d}",
         'year': start.year,
-        'hour': int(start.strftime('%I')),
-        'minute': start.minute,
-        'second': start.second,
+        'hour': f"{int(start.strftime('%I')):02d}",
+        'minute': f"{start.minute:02d}",
+        'second': f"{start.second:02d}",
         'pm': start.strftime('%p'),
-        'full': class_started,
+        'full': start.strftime('%d/%m/%Y, %I:%M:%S %p'),
     }
 
     end_time = {
-        'day': end.day,
-        'month': end.month,
+        'day': f"{end.day:02d}",
+        'month': f"{end.month:02d}",
         'year': end.year,
-        'hour': int(end.strftime('%I')),
-        'minute': end.minute,
-        'second': end.second,
+        'hour': f"{int(end.strftime('%I')):02d}",
+        'minute': f"{end.minute:02d}",
+        'second': f"{end.second:02d}",
         'pm': end.strftime('%p'),
-        'full': class_ended,
+        'full': end.strftime('%d/%m/%Y, %I:%M:%S %p'),
     }
 
     time_details = {
@@ -253,29 +253,29 @@ def get_class_timings():
 
     sample_output = {
         "start": {
-            "day": 24,
-            "month": 11,
+            "day": "24",
+            "month": "11",
             "year": 2024,
-            "hour": 12,
-            "minute": 11,
-            "second": 12,
+            "hour": "01",
+            "minute": "07",
+            "second": "16",
             "pm": "AM",
-            "full": "24/11/2024, 12:11:12 am"
+            "full": "24/11/2024, 01:07:16 AM"
         },
         "end": {
-            "day": 24,
-            "month": 11,
+            "day": "24",
+            "month": "11",
             "year": 2024,
-            "hour": 12,
-            "minute": 11,
-            "second": 16,
+            "hour": "01",
+            "minute": "07",
+            "second": "19",
             "pm": "AM",
-            "full": "24/11/2024, 12:11:16 am"
+            "full": "24/11/2024, 01:07:19 AM"
         },
         "duration": {
-            "hours": 0,
-            "minutes": 0,
-            "seconds": 4
+            "hours": "00",
+            "minutes": "00",
+            "seconds": "03"
         }
     }
 
