@@ -203,6 +203,85 @@ def extract_time(date_time_string):
         return "N/A"
 
 
+# Get data like class start_time, end_time and duration in dict
+def get_class_timings():
+    # Get the class started and ended time from the uploaded_data.json
+    with open(os.environ.get('uploaded_data'), 'r') as f:
+        data = json.load(f)
+
+    class_started = data['js'][0]
+    class_ended = data['js'][-1]
+
+    # convert the class_started and class_ended to datetime object
+    start = datetime.strptime(class_started, '%d/%m/%Y, %I:%M:%S %p')
+    end = datetime.strptime(class_ended, '%d/%m/%Y, %I:%M:%S %p')
+
+    duration = (end - start).total_seconds()
+    duration = {
+        'hours': int((duration % (24 * 3600)) // 3600),
+        'minutes': int((duration % 3600) // 60),
+        'seconds': int(duration % 60)
+    }
+
+    start_time = {
+        'day': start.day,
+        'month': start.month,
+        'year': start.year,
+        'hour': int(start.strftime('%I')),
+        'minute': start.minute,
+        'second': start.second,
+        'pm': start.strftime('%p'),
+        'full': class_started,
+    }
+
+    end_time = {
+        'day': end.day,
+        'month': end.month,
+        'year': end.year,
+        'hour': int(end.strftime('%I')),
+        'minute': end.minute,
+        'second': end.second,
+        'pm': end.strftime('%p'),
+        'full': class_ended,
+    }
+
+    time_details = {
+        'start': start_time,
+        'end': end_time,
+        'duration': duration
+    }
+
+    sample_output = {
+        "start": {
+            "day": 24,
+            "month": 11,
+            "year": 2024,
+            "hour": 12,
+            "minute": 11,
+            "second": 12,
+            "pm": "AM",
+            "full": "24/11/2024, 12:11:12 am"
+        },
+        "end": {
+            "day": 24,
+            "month": 11,
+            "year": 2024,
+            "hour": 12,
+            "minute": 11,
+            "second": 16,
+            "pm": "AM",
+            "full": "24/11/2024, 12:11:16 am"
+        },
+        "duration": {
+            "hours": 0,
+            "minutes": 0,
+            "seconds": 4
+        }
+    }
+
+    return time_details
+
+
 if __name__ == '__main__':
     # app.run(debug=True)
     app.run(
