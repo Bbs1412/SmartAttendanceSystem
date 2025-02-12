@@ -245,10 +245,30 @@ def get_class_timings():
         'full': end.strftime('%d/%m/%Y, %I:%M:%S %p'),
     }
 
+    # open the logs file for the final log:
+    with open(os.environ.get("attendance_log_file"), "r") as f:
+        all_logs = json.load(f)
+
+    final = all_logs[-1]
+    start_time = datetime.strptime(
+        final['calc_start_time'], "%d/%m/%Y, %I:%M:%S %p")
+    end_time = datetime.strptime(
+        final['calc_end_time'], "%d/%m/%Y, %I:%M:%S %p")
+    diff = end_time - start_time
+    hrs, rem = divmod(diff.seconds, 3600)
+    mins, secs = divmod(rem, 60)
+
+    processing_time = {
+        "hours": f"{hrs:02d}",
+        "minutes": f"{mins:02d}",
+        "seconds": f"{secs:02d}",
+    }
+
     time_details = {
         'start': start_time,
         'end': end_time,
-        'duration': duration
+        'duration': duration,
+        'processing_time': processing_time
     }
 
     sample_output = {
