@@ -250,11 +250,8 @@ def get_class_timings():
         all_logs = json.load(f)
 
     final = all_logs[-1]
-    start_time = datetime.strptime(
-        final['calc_start_time'], "%d/%m/%Y, %I:%M:%S %p")
-    end_time = datetime.strptime(
-        final['calc_end_time'], "%d/%m/%Y, %I:%M:%S %p")
-    diff = end_time - start_time
+    diff = datetime.strptime(final['calc_end_time'], "%d/%m/%Y, %I:%M:%S %p") - \
+        datetime.strptime(final['calc_start_time'], "%d/%m/%Y, %I:%M:%S %p")
     hrs, rem = divmod(diff.seconds, 3600)
     mins, secs = divmod(rem, 60)
 
