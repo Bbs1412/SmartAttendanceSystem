@@ -30,14 +30,26 @@ To automate attendance calculation efficiently using face recognition, ensuring 
 + Face encodings are a one-time process completed during registration of new student.
 + Attendance is calculated based on frame presence with a threshold of 75%.
 + Results are rendered on a webpage and made downloadable in Excel format.
++ A distributed computing implementation of this project is here: [![Distributed Version Repository](https://img.shields.io/badge/Bbs1412/-DistributedAttendanceSystem-ff8800.svg?logo=github)](https://github.com/Bbs1412/DistributedAttendanceSystem)
+
 
 ### Features:
-+ Upload video for attendance processing.
-+ Real-time face recognition with concurrency using threading, locking for consistent read-write operations.
++ Web-based interface for ease of use.
+  ![Home Page - Dark Mode](Docs/home_dark.png)
++ Record and Upload video for attendance processing.
+  ![Recording](Docs/recording.png)
++ Proper asynchronous handling ensures seamless request processing and smooth UI transitions during face recognition.
+  ![Processing](Docs/processing.png)
++ Real-time face recognition with **concurrency** using threading, **locking** for consistent read-write operations.
 + Faster operation and time-saving due to parallel processing. 
 + Threshold-based attendance marking for customizable and accurate results.
 + Faculty access to detailed results and downloadable attendance records.
-+ Web-based interface for ease of use.
+  ![Results](Docs/result_dark.png)
++ Results are provided in downloadable Excel format.
+  ![Excel](Docs/excel.png)
++ Light and Dark mode for better accessibility.
+  ![Home Page - Light Mode](Docs/home_light.png)
+  ![Results - Light Mode](Docs/result_light.png)
 
 ### Tech Stack:
 + **Backend:** Python, Flask
@@ -121,10 +133,10 @@ To automate attendance calculation efficiently using face recognition, ensuring 
 ## ℹ️ Extra Measures:
 
 ### General Instructions:
-- Using Conda for environment creation may help ease the process and might make it faster.
 - If some errors occurs:
     1. First try deleting the `__pycache__` folder
     1. Restart the server and run the application again.
+- Using Conda for environment creation may help ease the process and might make it faster.
 
 ### Folders:
 - Although the code includes conditions to dynamically check and resolve issues, if an error occurs or for re-verification, please check the following folders:
@@ -153,7 +165,7 @@ To automate attendance calculation efficiently using face recognition, ensuring 
 
 
 ## 📜 License: 
-[![Code-License](https://img.shields.io/badge/License%20-GNU%20--%20GPL%20v3.0-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![Code-License](https://img.shields.io/badge/License%20-GNU%20--%20GPL%20v3.0-blue.svg?logo=GNU)](https://www.gnu.org/licenses/gpl-3.0)
 - This project is licensed under the `GNU General Public License v3.0`
 - See the [LICENSE](LICENSE) file for details.
 - You can use the code with proper credits to the author.
