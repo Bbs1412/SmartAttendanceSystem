@@ -36,7 +36,7 @@ register_lock = threading.Lock()
 
 with open(class_register_file, 'r') as file:
     tmp = json.load(file)
-# print(json.dumps(tmp, indent=4))
+# print(f"[Attendance.py Ors]: {json.dumps(tmp, indent=4)}")
 
 # modify it to have all required things of actual register
 register = {}
@@ -54,7 +54,7 @@ for stud in tmp:
         "Percentage": -1,
         "Status": -1,
     }
-# print(json.dumps(register, indent=4))
+# print(f"[Attendance.py Ors]: {json.dumps(register, indent=4)}")
 
 
 # ================================================================================
@@ -75,7 +75,7 @@ for stud in register.keys():
 
     if DEBUG:
         print(
-            f"Loaded Model: ({register[stud]['Reg_No']}) {register[stud]['Name']}")
+            f"[Attendance.py Info]: Loaded Model -> ({register[stud]['Reg_No']}) {register[stud]['Name']}")
 
 
 # ================================================================================
@@ -320,8 +320,9 @@ def mark_attendance():
         stud['Status'] = status
 
         if DEBUG:
-            print(f'Present: {present}, Absent: {absent}')
-            print(f'Status: {status}, Percentage: {percentage}')
+            print(f'[Attendance.py Info] Present: {present}, Absent: {absent}')
+            print(
+                f'[Attendance.py Info] Status: {status}, Percentage: {percentage}')
 
 
 def save_register():
@@ -413,7 +414,8 @@ def driver_function(images_to_check: list, timestamps: list):
 
     def process_and_collect(index):
         if DEBUG:
-            print(f"Processing image #{index}: {images_to_check[index]}...")
+            print(
+                f"[Attendance.py Info]: Processing image #{index}: {images_to_check[index]}...")
 
         result = check_image(images_to_check[index], timestamps[index])
         # Write log:
