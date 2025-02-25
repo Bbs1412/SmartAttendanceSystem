@@ -1,6 +1,7 @@
 import os
 import cv2
 import json
+import time
 import pickle
 import threading
 import numpy as np
@@ -15,6 +16,8 @@ from concurrent.futures import ThreadPoolExecutor
 # ================================================================================
 
 load_dotenv()
+DEBUG = os.environ.get('DEBUG', False)
+
 static_url = os.environ.get('static_url')
 attendance_log_path = os.environ.get("attendance_log_file")
 class_attendance_path = os.environ.get('class_attendance')
@@ -26,7 +29,6 @@ class_register_file = os.path.join(static_url, class_register_path)
 
 # Initialize locks
 register_lock = threading.Lock()
-
 
 # ================================================================================
 # load the `class` json created from face modelling code (like a student register)
@@ -59,7 +61,6 @@ for stud in tmp:
 # Load saved face models from model pkl:
 # ================================================================================
 
-
 known_face_encodings = []
 known_face_reg_no = []
 
@@ -71,8 +72,10 @@ for stud in register.keys():
         known_face_encodings.append(pickle.load(file))
 
     known_face_reg_no.append(register[stud]['Reg_No'])
-    print(
-        f"Loaded Model: ({register[stud]['Reg_No']}) {register[stud]['Name']}")
+
+    if DEBUG:
+        print(
+            f"Loaded Model: ({register[stud]['Reg_No']}) {register[stud]['Name']}")
 
 
 # ================================================================================
@@ -132,7 +135,6 @@ class Timer:
         """
         print(_help)
         return _help
-
 
 
 # ================================================================================
@@ -230,7 +232,7 @@ def export_logs():
 # ================================================================================
 
 def get_datetime(js_mod_dt):
-    "Gives the frame number and datetime in datetime (python)'s std format"
+    """Returns the timestamp (in Python-datetime format) and the frame-number from the js_mod_dt string"""
     # sample = "8/8/2024, 12:56:36 am, 0"
     number = js_mod_dt.split(",")[-1].strip()
     stamp = ', '.join(js_mod_dt.split(",")[:-1])
@@ -317,8 +319,9 @@ def mark_attendance():
         status = 'Present' if percentage >= 75 else 'Absent'
         stud['Status'] = status
 
-        # print(f'Present: {present}, Absent: {absent}')
-        # print(f'Status: {status}, Percentage: {percentage}')
+        if DEBUG:
+            print(f'Present: {present}, Absent: {absent}')
+            print(f'Status: {status}, Percentage: {percentage}')
 
 
 def save_register():
@@ -329,81 +332,113 @@ def save_register():
     with open(json_file, "w") as f:
         json.dump(register, f, indent=4)
 
-    with open("./assets/results.json", "w") as f:
-        json.dump(register, f, indent=4)
-    
+
 # ================================================================================
 # Main function which controls flow of events per image-thread:
 # ================================================================================
 
-def check_image(args):
-    i, to_check, timestamp = args
+def check_image(image_data, timestamp):
+    """
+    Processes a single image for attendance checking.
+
+    Args:
+        image_data: The image (path) to be checked.
+        timestamp: The timestamp associated with the image.
+
+    Returns:
+        dict: Log data including timestamp, processing times, and attendance information.
+    """
+    # Timer for attendance checking
     timer = Timer()
     timer.start()
-    present = check_attendance(to_check[i])
+    present = check_attendance(image_data)
     timer.end()
 
+    # Timer for updating register
     timer_for_lock = Timer()
     timer_for_lock.start()
-    update_register(present, timestamp[i])
+    update_register(present, timestamp)
     timer_for_lock.end()
 
-    time_records = {}
-    time_records = timer.get_json(
-        start_name='thread_start_time',
-        end_name='thread_end_time',
-        diff_name='thread_time_taken'
-    )
-    time_records['register_lock_time'] = timer_for_lock.get_diff()
-    create_log({
-        'timestamp': timestamp[i],
-        'time_records': time_records,
-        'people_present': present,
-    })
+    # Compile time records:
+    time_records = {
+        **timer.get_json(
+            start_name="thread_start_time",
+            end_name="thread_end_time",
+            diff_name="thread_time_taken"
+        ),
+        "register_lock_time": timer_for_lock.get_diff()
+    }
 
-    # if do not want nested json, then:
-    # create_log({
-    #     'timestamp': timestamp[i],
-    #     **timer.get_json(),
-    #     'register_lock_time': timer_for_lock.get_diff(),
-    #     'people_present': present,
-    # })
+    # for returning non-nested json:
+    # ex. { timestamp: "...," "start": "..." , "people_present": "..." , ... }
+    # return {
+    #     "timestamp": timestamp,
+    #     **time_records,
+    #     "people_present": present,
+    # }
+
+    # for returning nested json:
+    # (means, time_records will be inside another key
+    # ex. { timestamp: "..." , time_records: { "start": "..." , ... } , ... })
+    return {
+        "timestamp": timestamp,
+        "time_records": time_records,
+        "people_present": present,
+    }
 
 
 # ================================================================================
 # Driver function to run the whole (batch) process:
 # ================================================================================
 
-def driver_function(to_check: list, timestamp: list):
-    # delete old logs file if present (otherwise, logs will be appended to some old data):
+def driver_function(images_to_check: list, timestamps: list):
+    """
+    Runs the batch process for attendance checking.
+
+    Args:
+        images_to_check (list): List of images (paths) to check.
+        timestamps (list): List of timestamps for the images.
+    """
+    # Delete old logs file
     if os.path.exists(attendance_log_file):
         os.remove(attendance_log_file)
 
     timer_ = Timer()
     timer_.start()
 
+    # max_workers based on available CPU cores
     # max_workers = 5
     max_workers = os.cpu_count()
 
+    def process_and_collect(index):
+        if DEBUG:
+            print(f"Processing image #{index}: {images_to_check[index]}...")
+
+        result = check_image(images_to_check[index], timestamps[index])
+        # Write log:
+        create_log(result)
+
+    # Run checks concurrently
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         executor.map(
-            check_image,
-            [(i, to_check, timestamp) for i in range(len(to_check))]
+            process_and_collect,                # function to run
+            range(len(images_to_check))         # iterable of arguments
         )
 
     timer_.end()
 
-    # Do not want nested json, so:
+    # Save logs and export
     create_log({
-        'title': 'final log',
+        "title": "final log",
         **timer_.get_json(
-            start_name='calc_start_time',
-            end_name='calc_end_time',
-            diff_name='calc_time_taken'
+            start_name="calc_start_time",
+            end_name="calc_end_time",
+            diff_name="calc_time_taken"
         )
     })
 
-    # To get nested json:
+    # # To get nested json:
     # create_log({
     #     'title': 'final log',
     #     'time_taken': timer_.get_json(
@@ -412,7 +447,6 @@ def driver_function(to_check: list, timestamp: list):
     #         diff_name='calc_time_taken'
     #     ),
     # })
-
     export_logs()
     save_register()
 
@@ -421,6 +455,7 @@ def driver_function(to_check: list, timestamp: list):
 # Testing:
 # ================================================================================
 
+# DEBUG = True
 # with open("./_uploaded_data.json", 'r') as f:
 #     uploaded = json.load(f)
 
