@@ -166,4 +166,7 @@ temp_*
 Jsons/*
 Models/*
 Pics/*
-
+Uploads/*
+Excels/*
+z_*
+.editorconfig
