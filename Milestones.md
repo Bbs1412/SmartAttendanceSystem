@@ -18,3 +18,10 @@ This file highlights the milestones achieved in the project. The milestones are 
     - Implemented Light and Dark mode for better accessibility.
     - Added animations and improved transitions for a smoother, more polished user experience.
     - Planning to work on backend code optimization and improving the face recognition system in the next version.
+
+
+3. **Third Version:**
+    - Enhanced the backend code to improve performance and optimize face recognition.
+    - Improved coding practices and documentation.
+    - Implemented `DEBUG` variable for debug-logging.
+    - Many other minor changes and project finalization.
