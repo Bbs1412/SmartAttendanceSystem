@@ -16,7 +16,7 @@ from concurrent.futures import ThreadPoolExecutor
 # ================================================================================
 
 load_dotenv()
-DEBUG = os.environ.get('DEBUG', False)
+DEBUG = os.environ.get('DEBUG', False) == 'True'
 
 static_url = os.environ.get('static_url')
 attendance_log_path = os.environ.get("attendance_log_file")
@@ -36,7 +36,7 @@ register_lock = threading.Lock()
 
 with open(class_register_file, 'r') as file:
     tmp = json.load(file)
-# print(f"[Attendance.py Ors]: {json.dumps(tmp, indent=4)}")
+# print(f"[Attendance Ors]: {json.dumps(tmp, indent=4)}")
 
 # modify it to have all required things of actual register
 register = {}
@@ -54,7 +54,7 @@ for stud in tmp:
         "Percentage": -1,
         "Status": -1,
     }
-# print(f"[Attendance.py Ors]: {json.dumps(register, indent=4)}")
+# print(f"[Attendance Ors]: {json.dumps(register, indent=4)}")
 
 
 # ================================================================================
@@ -75,7 +75,7 @@ for stud in register.keys():
 
     if DEBUG:
         print(
-            f"[Attendance.py Info]: Loaded Model -> ({register[stud]['Reg_No']}) {register[stud]['Name']}")
+            f"[Attendance Info]: Loaded Model -> ({register[stud]['Reg_No']}) {register[stud]['Name']}")
 
 
 # ================================================================================
@@ -243,6 +243,12 @@ def get_datetime(js_mod_dt):
 
 
 def update_register(present, timestamp):
+    """ Updates the register with the present people and their attendance status
+
+    Args:
+        present (list): List of registration numbers of present students.
+        timestamp (str): Timestamp of the image.
+    """
     with register_lock:
         for reg_no in register.keys():
             # remove image and pickle (server side) details:
@@ -301,6 +307,10 @@ def update_register(present, timestamp):
 def mark_attendance():
     """Marks the attendance of each student in the register (75% criteria)"""
 
+    if DEBUG:
+        print(f'\n[Attendance Info]: Marking attendance...')
+        print(f'    | {"Reg".center(10)} | {"Name".center(15)} | {"Present".center(10)} | {"Absent".center(10)} | {"Percentage".center(10)} | {"Status".center(10)} |')
+
     for stud in register.keys():
         stud = register[stud]
         present = 0
@@ -323,9 +333,12 @@ def mark_attendance():
         stud['Status'] = status
 
         if DEBUG:
-            print(f'[Attendance.py Info] Present: {present}, Absent: {absent}')
-            print(
-                f'[Attendance.py Info] Status: {status}, Percentage: {percentage}')
+            t_reg = str(stud['Reg_No']).center(10)
+            t_name = str(stud['Name'][:15]).center(15)
+
+            print(f'    | {t_reg} | {t_name} | {str(present).center(10)} | {str(absent).center(10)} | {str(percentage).center(10)} | {status.center(10)} |')
+            # print(f'[Attendance Info]: Present: {present}, Absent: {absent}')
+            # print(f'[Attendance Info]: Status: {status}, Percentage: {percentage}')
 
 
 def save_register():
@@ -418,7 +431,7 @@ def driver_function(images_to_check: list, timestamps: list):
     def process_and_collect(index):
         if DEBUG:
             print(
-                f"[Attendance.py Info]: Processing image #{index}: {images_to_check[index]}...")
+                f"[Attendance Info]: Processing image #{index}: {images_to_check[index]}...")
 
         result = check_image(images_to_check[index], timestamps[index])
         # Write log:
@@ -460,15 +473,15 @@ def driver_function(images_to_check: list, timestamps: list):
 # Testing:
 # ================================================================================
 
-DEBUG = True
-with open("./Jsons/uploaded_data.json", 'r') as f:
-    uploaded = json.load(f)
+if __name__ == "__main__":
+    DEBUG = True
+    with open("./Jsons/uploaded_data.json", 'r') as f:
+        uploaded = json.load(f)
 
-py_timestamps = uploaded['py']
-js_timestamps = uploaded['js']
-js_mod_timestamps = uploaded['js_mod']
-filenames = uploaded['files']
+    py_timestamps = uploaded['py']
+    js_timestamps = uploaded['js']
+    js_mod_timestamps = uploaded['js_mod']
+    filenames = uploaded['files']
 
-driver_function(filenames, js_mod_timestamps)
-save_register()
-# print()
+    driver_function(filenames, js_mod_timestamps)
+    print()
