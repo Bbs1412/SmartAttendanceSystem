@@ -314,7 +314,10 @@ def mark_attendance():
             else:
                 absent += 1
 
-        percentage = round((present / (present + absent)) * 100)
+        if (present + absent) == 0:
+            percentage = 0
+        else:
+            percentage = round((present / (present + absent)) * 100)
         stud['Percentage'] = percentage
         status = 'Present' if percentage >= 75 else 'Absent'
         stud['Status'] = status
@@ -457,15 +460,15 @@ def driver_function(images_to_check: list, timestamps: list):
 # Testing:
 # ================================================================================
 
-# DEBUG = True
-# with open("./_uploaded_data.json", 'r') as f:
-#     uploaded = json.load(f)
+DEBUG = True
+with open("./Jsons/uploaded_data.json", 'r') as f:
+    uploaded = json.load(f)
 
-# py_timestamps = uploaded['py']
-# js_timestamps = uploaded['js']
-# js_mod_timestamps = uploaded['js_mod']
-# filenames = uploaded['files']
+py_timestamps = uploaded['py']
+js_timestamps = uploaded['js']
+js_mod_timestamps = uploaded['js_mod']
+filenames = uploaded['files']
 
-# driver_function(filenames, js_mod_timestamps)
-# save_register()
-# # print()
+driver_function(filenames, js_mod_timestamps)
+save_register()
+# print()
